@@ -6,6 +6,8 @@
     <AssemblyName>PipAndIvory.ServiceDefaults</AssemblyName>
   </PropertyGroup>
 
+
+  <!-- Package References -->
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     

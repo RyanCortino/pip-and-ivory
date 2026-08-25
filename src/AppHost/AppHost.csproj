@@ -6,10 +6,15 @@
     <AssemblyName>PipAndIvory.AppHost</AssemblyName>
   </PropertyGroup>
 
+  <!-- Aspire Hosting -->
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.Azure.AppContainers" />
     <PackageReference Include="Aspire.Hosting.JavaScript" />
+  </ItemGroup>
+  
+  <!-- SQL Server Hosting -->
+  <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Azure.Sql" />
   </ItemGroup>
 

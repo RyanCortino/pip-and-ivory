@@ -5,6 +5,7 @@
     <AssemblyName>PipAndIvory.Domain</AssemblyName>
   </PropertyGroup>
 
+  <!-- Package References -->
   <ItemGroup>
     <PackageReference Include="MediatR.Contracts" />
   </ItemGroup>
