@@ -91,9 +91,24 @@ public class CardinalDirection(string code) : ValueObject
         string.IsNullOrWhiteSpace(code) ? "UNDEFINED" : code.ToUpper();
 
     /// <summary>
-    /// Enumerates all supported canonical directions (N, NE, E, SE, S, SW, W, NW).
-    /// Useful for validation and iteration.
+    /// Gets the supported cardinal direction instances.
     /// </summary>
+    /// <remarks>
+    /// This property yields the predefined, supported <see cref="CardinalDirection"/> instances.
+    /// The sequence is implemented as an iterator and returns the canonical static instances:
+    /// <list type="bullet">
+    /// <item><description><see cref="North"/> — the 'North' direction.</description></item>
+    /// <item><description><see cref="NorthEast"/> — the 'North-East' direction.</description></item>
+    /// <item><description><see cref="East"/> — the 'East' direction.</description></item>
+    /// <item><description><see cref="SouthEast"/> — the 'South-East' direction.</description></item>
+    /// <item><description><see cref="South"/> — the 'South' direction.</description></item>
+    /// <item><description><see cref="SouthWest"/> — the 'South-West' direction.</description></item>
+    /// <item><description><see cref="West"/> — the 'West' direction.</description></item>
+    /// <item><description><see cref="NorthWest"/> — the 'North-West' direction.</description></item>
+    /// </list>
+    /// Consumers can iterate this sequence to discover valid directions or use <see cref="From(string)"/>
+    /// to validate and obtain a <see cref="CardinalDirection"/> instance from a string code.
+    /// </remarks>
     public static IEnumerable<CardinalDirection> SupportedDirections
     {
         get
