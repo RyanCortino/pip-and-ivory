@@ -128,6 +128,11 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     public string Name => $"{Pip1}-{Pip2}";
 
     /// <summary>
+    /// Total pip count of the bone, calculated as the sum of <see cref="Pip1"/> and <see cref="Pip2"/>.
+    /// </summary>
+    public int Weight => Pip1 + Pip2;
+
+    /// <summary>
     /// Implicit conversion to <see cref="string"/> producing the same value as <see cref="ToString"/>.
     /// </summary>
     /// <param name="bone">The bone to convert.</param>
