@@ -1,7 +1,7 @@
 ﻿namespace PipAndIvory.Domain.Exceptions;
 
-public class UnsupportedTileException : Exception
+public class UnsupportedBoneException : Exception
 {
-    public UnsupportedTileException(string name)
+    public UnsupportedBoneException(string name)
         : base($"Tile \"{name}\" is unsupported.") { }
 }
