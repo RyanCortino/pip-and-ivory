@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace PipAndIvory.Domain.Entities;
 
-namespace PipAndIvory.Domain.Entities;
+public readonly record struct PlayerId(Guid Value) { }
 
-public class Player : BaseAuditableEntity
+public class Player : BaseAuditableEntity<PlayerId>
 {
-    public string? Name { get; set; }
+    public string? DisplayName { get; set; }
 
     public int BlockGamesPlayed { get; set; }
 
