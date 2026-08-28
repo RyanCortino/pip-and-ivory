@@ -1,6 +1,6 @@
 ﻿namespace PipAndIvory.Domain.Common;
 
-public abstract class BaseAuditableEntity : BaseEntity
+public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IBaseAuditableEntity
 {
     public DateTimeOffset Created { get; set; }
 
