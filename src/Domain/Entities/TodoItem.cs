@@ -1,6 +1,6 @@
 ﻿namespace PipAndIvory.Domain.Entities;
 
-public class TodoItem : BaseAuditableEntity
+public class TodoItem : BaseAuditableEntity<int>
 {
     public int ListId { get; set; }
 
