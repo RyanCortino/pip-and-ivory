@@ -185,6 +185,11 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
             yield return OneFour;
             yield return OneFive;
             yield return OneSix;
+            yield return DoubleTwo;
+            yield return TwoThree;
+            yield return TwoFour;
+            yield return TwoFive;
+            yield return TwoSix;
             yield return DoubleThree;
             yield return ThreeFour;
             yield return ThreeFive;
