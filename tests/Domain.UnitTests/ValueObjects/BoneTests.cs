@@ -23,7 +23,7 @@ public class BoneTests
     [Test]
     public void ShouldReturnCorrectPipValuesForDoubles()
     {
-        var bone = Bone.From(4);
+        var bone = Bone.From(4, 4);
 
         bone.Pip1.ShouldBe(4);
         bone.Pip2.ShouldBe(4);
@@ -43,32 +43,53 @@ public class BoneTests
     {
         string name = Bone.ThreeSix;
 
-        name.ShouldBe("3-6");
+        name.ShouldBe("[3|6]");
     }
 
     [Test]
     public void ShouldPerformExplicitConversionGivenSupportedBoneName()
     {
-        var bone = (Bone)"4-4";
+        var bone = (Bone)"[4|4]";
 
         bone.ShouldBe(Bone.DoubleFour);
     }
 
     [Test]
-    public void ShouldThrowUnsupportedBoneExceptionGivenNotSupportedBone()
+    public void ShouldPerformHasFaceAndWeightCalculations()
     {
-        Should.Throw<UnsupportedBoneException>(() => Bone.From(6, 0));
+        var bone = Bone.From(2, 5);
+
+        Assert.True(bone.HasFace(2));
+        Assert.True(bone.HasFace(5));
+        Assert.False(bone.HasFace(3));
+        Assert.AreEqual(7, bone.Weight);
     }
 
     [Test]
     public void ShouldBeComparableWithOperators()
     {
-        var b1 = new Bone(3, 6);
-        var b2 = new Bone(3, 6);
-        var b3 = new Bone(6);
+        var b1 = Bone.From(3, 6);
+        var b2 = Bone.From(3, 6);
+        var b3 = Bone.From(6, 6);
 
         (b1 == b2).ShouldBe(true);
         (b1 == b3).ShouldBe(false);
+    }
+
+    [Test]
+    public void ShouldRecognizeCannonicalOrientation()
+    {
+        var b1 = Bone.From(3, 5);
+        var b2 = Bone.From(5, 3);
+
+        (b1 == b2).ShouldBe(true);
+    }
+
+    [Test]
+    public void ShouldThrowUnsupportedBoneExceptionGivenOutOfRangePipValue()
+    {
+        Should.Throw<UnsupportedBoneException>(() => Bone.From(-1, 3));
+        Should.Throw<UnsupportedBoneException>(() => Bone.From(0, 8));
     }
 
     [Test]
@@ -77,14 +98,6 @@ public class BoneTests
         var bone = Bone.From(2, 5);
 
         bone.Weight.ShouldBe(7); // 2 + 5 = 7
-    }
-
-    [Test]
-    public void WeightIsSumOfPips_ForDoubleBone()
-    {
-        var bone = Bone.From(6); // double six
-
-        bone.Weight.ShouldBe(12); // 6 + 6 = 12
     }
 
     [Test]
