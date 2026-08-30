@@ -1,4 +1,9 @@
-﻿namespace PipAndIvory.Domain.ValueObjects;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Security;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+
+namespace PipAndIvory.Domain.ValueObjects;
 
 /// <summary>
 /// Represents a domino value object.
@@ -7,7 +12,7 @@
 /// A <see cref="Bone"/> holds two pips (spots) where a missing second pip represents a double (both pips are the same).
 /// This type restricts instances to the standard double-six domino set via <see cref="From(int, int?)"/> and <see cref="SupportedBones"/>.
 /// </remarks>
-public class Bone(int pip1, int? pip2 = null) : ValueObject
+public partial class Bone(int pip1, int pip2) : ValueObject
 {
     /// <summary>
     /// Creates a <see cref="Bone"/> instance and validates it is part of the supported set.
@@ -18,7 +23,18 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     /// <exception cref="UnsupportedBoneException">Thrown when the requested bone is not part of the supported bone set.</exception>
     public static Bone From(int pip1, int? pip2 = null)
     {
-        var bone = new Bone(pip1, pip2);
+        int secondFace = pip2 ?? pip1;
+        int firstFace = pip1;
+
+        Bone bone =
+            firstFace <= secondFace
+                ? new Bone(firstFace, secondFace)
+                : new Bone(secondFace, firstFace);
+
+        if (IsOutOfRange(bone.Pip1) || IsOutOfRange(bone.Pip2))
+        {
+            throw new UnsupportedBoneException(bone);
+        }
 
         if (!SupportedBones.Contains(bone))
         {
@@ -26,10 +42,15 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
         }
 
         return bone;
+
+        static bool IsOutOfRange(int pip)
+        {
+            return pip is < 0 or > 6;
+        }
     }
 
     /// <summary>Bone 0-0 (double zero).</summary>
-    public static Bone DoubleZero => new(0);
+    public static Bone DoubleZero => new(0, 0);
 
     /// <summary>Bone 0-1.</summary>
     public static Bone ZeroOne => new(0, 1);
@@ -50,7 +71,7 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     public static Bone ZeroSix => new(0, 6);
 
     /// <summary>Bone 1-1 (double one).</summary>
-    public static Bone DoubleOne => new(1);
+    public static Bone DoubleOne => new(1, 1);
 
     /// <summary>Bone 1-2.</summary>
     public static Bone OneTwo => new(1, 2);
@@ -68,7 +89,7 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     public static Bone OneSix => new(1, 6);
 
     /// <summary>Bone 2-2 (double two).</summary>
-    public static Bone DoubleTwo => new(2);
+    public static Bone DoubleTwo => new(2, 2);
 
     /// <summary>Bone 2-3.</summary>
     public static Bone TwoThree => new(2, 3);
@@ -83,7 +104,7 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     public static Bone TwoSix => new(2, 6);
 
     /// <summary>Bone 3-3 (double three).</summary>
-    public static Bone DoubleThree => new(3);
+    public static Bone DoubleThree => new(3, 3);
 
     /// <summary>Bone 3-4.</summary>
     public static Bone ThreeFour => new(3, 4);
@@ -95,7 +116,7 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     public static Bone ThreeSix => new(3, 6);
 
     /// <summary>Bone 4-4 (double four).</summary>
-    public static Bone DoubleFour => new(4);
+    public static Bone DoubleFour => new(4, 4);
 
     /// <summary>Bone 4-5.</summary>
     public static Bone FourFive => new(4, 5);
@@ -104,13 +125,13 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     public static Bone FourSix => new(4, 6);
 
     /// <summary>Bone 5-5 (double five).</summary>
-    public static Bone DoubleFive => new(5);
+    public static Bone DoubleFive => new(5, 5);
 
     /// <summary>Bone 5-6.</summary>
     public static Bone FiveSix => new(5, 6);
 
     /// <summary>Bone 6-6 (double six).</summary>
-    public static Bone DoubleSix => new(6);
+    public static Bone DoubleSix => new(6, 6);
 
     /// <summary>
     /// First pip value of the bone.
@@ -120,17 +141,29 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     /// <summary>
     /// Second pip value of the bone. For doubles this equals <see cref="Pip1"/>.
     /// </summary>
-    public int Pip2 { get; private set; } = pip2 ?? pip1;
+    public int Pip2 { get; private set; } = pip2;
 
     /// <summary>
     /// Human-readable name in the form "pip1-pip2" (for example "3-6" or "4-4").
     /// </summary>
-    public string Name => $"{Pip1}-{Pip2}";
+    public string Name => $"[{Pip1}|{Pip2}]";
 
     /// <summary>
     /// Total pip count of the bone, calculated as the sum of <see cref="Pip1"/> and <see cref="Pip2"/>.
     /// </summary>
     public int Weight => Pip1 + Pip2;
+
+    /// <summary>
+    /// Indicates whether the bone is a double (both pips are the same).
+    /// </summary>
+    public bool IsDouble => Pip1 == Pip2;
+
+    /// <summary>
+    /// Indicates whether the bone has a pip matching the specified value.
+    /// </summary>
+    /// <param name="value">The pip value to check.</param>
+    /// <returns>True if the bone has a pip matching the specified value; otherwise, false.</returns>
+    public bool HasFace(int value) => Pip1 == value || Pip2 == value;
 
     /// <summary>
     /// Implicit conversion to <see cref="string"/> producing the same value as <see cref="ToString"/>.
@@ -149,7 +182,10 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
     /// <exception cref="UnsupportedBoneException">Thrown when the parsed bone is not part of the supported set.</exception>
     public static explicit operator Bone(string name)
     {
-        var parts = name.Split('-');
+        var parts = name.Split('|')
+            .Select(p => NonNumerical().Replace(p ?? string.Empty, string.Empty))
+            .ToArray();
+
         int pip1 = int.Parse(parts[0]);
         int? pip2 = parts.Length > 1 ? int.Parse(parts[1]) : null;
 
@@ -211,4 +247,7 @@ public class Bone(int pip1, int? pip2 = null) : ValueObject
         yield return Pip1;
         yield return Pip2;
     }
+
+    [GeneratedRegex("[^0-9]")]
+    private static partial Regex NonNumerical();
 }
