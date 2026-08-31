@@ -9,6 +9,14 @@ public record CreatePlayerCommand : IRequest<PlayerId>
     public string? DisplayName { get; init; }
 }
 
+public class CreatePlayerCommandValidator : AbstractValidator<CreatePlayerCommand>
+{
+    public CreatePlayerCommandValidator()
+    {
+        RuleFor(v => v.DisplayName).MaximumLength(70);
+    }
+}
+
 public class CreatePlayerCommandHandler : IRequestHandler<CreatePlayerCommand, PlayerId>
 {
     private readonly IApplicationDbContext _context;
@@ -24,6 +32,9 @@ public class CreatePlayerCommandHandler : IRequestHandler<CreatePlayerCommand, P
     )
     {
         var entity = new Player { Id = PlayerId.New(), DisplayName = request.DisplayName };
+
+        if (entity.DisplayName is not null)
+            entity.DisplayName = entity.DisplayName.Trim();
 
         _context.Players.Add(entity);
 

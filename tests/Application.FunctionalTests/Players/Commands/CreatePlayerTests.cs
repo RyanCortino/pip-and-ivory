@@ -1,6 +1,5 @@
 ﻿using PipAndIvory.Application.Players.Commands.CreatePlayer;
 using PipAndIvory.Domain.Entities;
-using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.FunctionalTests.Players.Commands;
 

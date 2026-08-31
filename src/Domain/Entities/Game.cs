@@ -1,4 +1,6 @@
-﻿namespace PipAndIvory.Domain.Entities;
+﻿using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
+
+namespace PipAndIvory.Domain.Entities;
 
 public readonly record struct GameId(Guid Value) { }
 
