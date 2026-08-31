@@ -1,20 +1,12 @@
-﻿namespace PipAndIvory.Domain.Entities;
+﻿using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-public readonly record struct PlayerId(Guid Value) { }
+namespace PipAndIvory.Domain.Entities;
 
 public class Player : BaseAuditableEntity<PlayerId>
 {
     public string? DisplayName { get; set; }
 
-    public int BlockGamesPlayed { get; set; }
+    public GameStatistics BlockGameStats { get; private set; } = GameStatistics.None;
 
-    public int BlockGamesWon { get; set; }
-
-    public int HighestBlockScore { get; set; }
-
-    public int DrawGamesPlayed { get; set; }
-
-    public int DrawGamesWon { get; set; }
-
-    public int HighestDrawScore { get; set; }
+    public GameStatistics DrawGameStats { get; private set; } = GameStatistics.None;
 }
