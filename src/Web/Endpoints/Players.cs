@@ -25,7 +25,7 @@ public class Players : IEndpointGroup
         CreatePlayerCommand command
     )
     {
-        var playerId = await sender.Send(command); // PlayerId
+        var playerId = await sender.Send(command);
 
         return TypedResults.Created($"/{nameof(Players)}/{playerId.Value}", playerId.Value);
     }

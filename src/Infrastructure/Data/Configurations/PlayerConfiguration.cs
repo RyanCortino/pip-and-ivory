@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PipAndIvory.Domain.Entities;
-using PipAndIvory.Infrastructure.Data.ValueConverters;
+using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Infrastructure.Data.Configurations;
 
@@ -11,7 +11,9 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
     {
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Id).HasConversion<PlayerIdConverter>();
+        builder
+            .Property(p => p.Id)
+            .HasConversion(playerId => playerId.Value, value => new PlayerId(value));
 
         builder.Property(t => t.DisplayName).HasMaxLength(70);
 
