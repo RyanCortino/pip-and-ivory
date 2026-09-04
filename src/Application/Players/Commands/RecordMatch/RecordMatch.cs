@@ -4,8 +4,16 @@ using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.Players.Commands.RecordMatch;
 
-public record RecordMatchCommand(Guid PlayerId, GameVariant Gamemode, bool Won, int Score)
-    : IRequest;
+public record RecordMatchCommand : IRequest
+{
+    public PlayerId PlayerId { get; init; }
+
+    public GameVariant Gamemode { get; init; } = GameVariant.Block;
+
+    public bool Won { get; init; }
+
+    public int Score { get; init; }
+}
 
 public class RecordMatchCommandValidator : AbstractValidator<RecordMatchCommand>
 {
