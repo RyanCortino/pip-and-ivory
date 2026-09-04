@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using PipAndIvory.Application.TodoLists.Commands.CreateTodoList;
 using PipAndIvory.Application.TodoLists.Commands.DeleteTodoList;
 using PipAndIvory.Application.TodoLists.Commands.UpdateTodoList;
 using PipAndIvory.Application.TodoLists.Queries.GetTodos;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace PipAndIvory.Web.Endpoints;
 
@@ -28,8 +28,13 @@ public class TodoLists : IEndpointGroup
     }
 
     [EndpointSummary("Create a new Todo List")]
-    [EndpointDescription("Creates a new todo list using the provided details and returns the ID of the created list.")]
-    public static async Task<Created<int>> CreateTodoList(ISender sender, CreateTodoListCommand command)
+    [EndpointDescription(
+        "Creates a new todo list using the provided details and returns the ID of the created list."
+    )]
+    public static async Task<Created<int>> CreateTodoList(
+        ISender sender,
+        CreateTodoListCommand command
+    )
     {
         var id = await sender.Send(command);
 
@@ -37,10 +42,17 @@ public class TodoLists : IEndpointGroup
     }
 
     [EndpointSummary("Update a Todo List")]
-    [EndpointDescription("Updates the specified todo list. The ID in the URL must match the ID in the payload.")]
-    public static async Task<Results<NoContent, BadRequest>> UpdateTodoList(ISender sender, int id, UpdateTodoListCommand command)
+    [EndpointDescription(
+        "Updates the specified todo list. The ID in the URL must match the ID in the payload."
+    )]
+    public static async Task<Results<NoContent, BadRequest>> UpdateTodoList(
+        ISender sender,
+        int id,
+        UpdateTodoListCommand command
+    )
     {
-        if (id != command.Id) return TypedResults.BadRequest();
+        if (id != command.Id)
+            return TypedResults.BadRequest();
 
         await sender.Send(command);
 
