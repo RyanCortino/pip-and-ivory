@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using PipAndIvory.Application.Players.Commands.CreatePlayer;
 using PipAndIvory.Application.Players.Commands.DeletePlayer;
+using PipAndIvory.Application.Players.Commands.RecordMatch;
 using PipAndIvory.Application.Players.Commands.UpdatePlayer;
 using PipAndIvory.Application.Players.Queries.GetPlayer;
 
@@ -16,6 +17,8 @@ public class Players : IEndpointGroup
         groupBuilder.MapPost(CreatePlayer);
         groupBuilder.MapPut(UpdatePlayer, "{id}");
         groupBuilder.MapDelete(DeletePlayer, "{id}");
+
+        groupBuilder.MapPatch(RecordMatch, "{id}");
     }
 
     [EndpointSummary("Get a Player")]
@@ -66,6 +69,24 @@ public class Players : IEndpointGroup
     public static async Task<NoContent> DeletePlayer(ISender sender, Guid id)
     {
         await sender.Send(DeletePlayerCommand.From(id));
+
+        return TypedResults.NoContent();
+    }
+
+    [EndpointSummary("Record a Match for a Player")]
+    [EndpointDescription(
+        "Records a match for the specified player. The ID in the URL must match the ID in the payload."
+    )]
+    public static async Task<Results<NoContent, BadRequest>> RecordMatch(
+        ISender sender,
+        Guid id,
+        RecordMatchCommand command
+    )
+    {
+        if (id != command.PlayerId.Value)
+            return TypedResults.BadRequest();
+
+        await sender.Send(command);
 
         return TypedResults.NoContent();
     }
