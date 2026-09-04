@@ -2,6 +2,7 @@
 using PipAndIvory.Application.Players.Commands.CreatePlayer;
 using PipAndIvory.Application.Players.Commands.DeletePlayer;
 using PipAndIvory.Application.Players.Commands.UpdatePlayer;
+using PipAndIvory.Application.Players.Queries.GetPlayer;
 
 namespace PipAndIvory.Web.Endpoints;
 
@@ -11,9 +12,19 @@ public class Players : IEndpointGroup
     {
         groupBuilder.RequireAuthorization();
 
+        groupBuilder.MapGet(GetPlayer);
         groupBuilder.MapPost(CreatePlayer);
         groupBuilder.MapPut(UpdatePlayer, "{id}");
         groupBuilder.MapDelete(DeletePlayer, "{id}");
+    }
+
+    [EndpointSummary("Get a Player")]
+    [EndpointDescription("Retrieves the details of a player by their ID")]
+    public static async Task<Ok<PlayerVm>> GetPlayer(ISender sender)
+    {
+        var player = await sender.Send(new GetPlayerQuery());
+
+        return TypedResults.Ok(player);
     }
 
     [EndpointSummary("Create a new Player")]
