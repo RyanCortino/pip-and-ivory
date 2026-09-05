@@ -17,7 +17,20 @@ public record RecordMatchCommand : IRequest
 
 public class RecordMatchCommandValidator : AbstractValidator<RecordMatchCommand>
 {
-    public RecordMatchCommandValidator() { }
+    public RecordMatchCommandValidator()
+    {
+        RuleFor(x => x.PlayerId)
+            .Must(pid => pid.Value != Guid.Empty)
+            .WithMessage("A valid PlayerId must be provided.");
+
+        RuleFor(x => x.Gamemode)
+            .NotNull()
+            .WithMessage("A game variant must be specified.")
+            .Must(g => GameVariant.SupportedVariants.Contains(g))
+            .WithMessage("The specified game variant is not supported.");
+
+        RuleFor(x => x.Score).GreaterThanOrEqualTo(0).WithMessage("Score must be non-negative.");
+    }
 }
 
 public class RecordMatchCommandHandler(IApplicationDbContext context)
