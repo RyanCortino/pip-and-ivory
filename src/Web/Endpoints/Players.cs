@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using PipAndIvory.Application.Players.Commands.DeletePlayer;
 using PipAndIvory.Application.Players.Commands.RecordGameResult;
 using PipAndIvory.Application.Players.Commands.RegisterPlayer;
 using PipAndIvory.Application.Players.Commands.RenamePlayer;
