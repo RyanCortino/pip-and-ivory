@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using PipAndIvory.Application.Players.Commands.CreatePlayer;
-using PipAndIvory.Application.Players.Commands.DeletePlayer;
-using PipAndIvory.Application.Players.Commands.RecordMatch;
-using PipAndIvory.Application.Players.Commands.UpdatePlayer;
+using PipAndIvory.Application.Players.Commands.RecordGameResult;
+using PipAndIvory.Application.Players.Commands.RegisterPlayer;
+using PipAndIvory.Application.Players.Commands.RenamePlayer;
 using PipAndIvory.Application.Players.Queries.GetPlayer;
 
 namespace PipAndIvory.Web.Endpoints;
@@ -16,8 +15,6 @@ public class Players : IEndpointGroup
         groupBuilder.MapGet(GetPlayer);
         groupBuilder.MapPost(CreatePlayer);
         groupBuilder.MapPut(UpdatePlayer, "{id}");
-        groupBuilder.MapDelete(DeletePlayer, "{id}");
-
         groupBuilder.MapPatch(RecordMatch, "{id}");
     }
 
@@ -36,7 +33,7 @@ public class Players : IEndpointGroup
     )]
     public static async Task<Created<Guid>> CreatePlayer(
         ISender sender,
-        CreatePlayerCommand command
+        RegisterPlayerCommand command
     )
     {
         var playerId = await sender.Send(command);
@@ -51,24 +48,13 @@ public class Players : IEndpointGroup
     public static async Task<Results<NoContent, BadRequest>> UpdatePlayer(
         ISender sender,
         Guid id,
-        UpdatePlayerCommand command
+        RenamePlayerCommand command
     )
     {
         if (id != command.Id.Value)
             return TypedResults.BadRequest();
 
         await sender.Send(command);
-
-        return TypedResults.NoContent();
-    }
-
-    [EndpointSummary("Delete a Player")]
-    [EndpointDescription(
-        "Deletes the specified player. The ID in the URL must match the ID in the payload."
-    )]
-    public static async Task<NoContent> DeletePlayer(ISender sender, Guid id)
-    {
-        await sender.Send(DeletePlayerCommand.From(id));
 
         return TypedResults.NoContent();
     }
@@ -80,7 +66,7 @@ public class Players : IEndpointGroup
     public static async Task<Results<NoContent, BadRequest>> RecordMatch(
         ISender sender,
         Guid id,
-        RecordMatchCommand command
+        RecordGameResultCommand command
     )
     {
         if (id != command.PlayerId.Value)
