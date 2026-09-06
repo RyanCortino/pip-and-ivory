@@ -1,17 +1,17 @@
 ﻿using PipAndIvory.Application.Common.Exceptions;
-using PipAndIvory.Application.Players.Commands.CreatePlayer;
-using PipAndIvory.Application.Players.Commands.UpdatePlayer;
+using PipAndIvory.Application.Players.Commands.RegisterPlayer;
+using PipAndIvory.Application.Players.Commands.RenamePlayer;
 using PipAndIvory.Domain.Entities;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.FunctionalTests.Players.Commands;
 
-public class UpdatePlayerTests : TestBase
+public class RenamePlayerTests : TestBase
 {
     [Test]
     public async Task ShouldRequireValidPlayerId()
     {
-        var command = new UpdatePlayerCommand { Id = PlayerId.New(), DisplayName = "Name" };
+        var command = new RenamePlayerCommand { Id = PlayerId.New(), DisplayName = "Name" };
         await Should.ThrowAsync<NotFoundException>(() => TestApp.SendAsync(command));
     }
 
@@ -19,10 +19,10 @@ public class UpdatePlayerTests : TestBase
     public async Task ShouldRequireDisplayName()
     {
         var playerId = await TestApp.SendAsync(
-            new CreatePlayerCommand { DisplayName = "Initial Player" }
+            new RegisterPlayerCommand { DisplayName = "Initial Player" }
         );
 
-        var command = new UpdatePlayerCommand { Id = playerId, DisplayName = string.Empty };
+        var command = new RenamePlayerCommand { Id = playerId, DisplayName = string.Empty };
 
         var ex = await Should.ThrowAsync<ValidationException>(() => TestApp.SendAsync(command));
 
@@ -31,15 +31,15 @@ public class UpdatePlayerTests : TestBase
     }
 
     [Test]
-    public async Task ShouldUpdatePlayer()
+    public async Task ShouldRenamePlayer()
     {
         var userId = await TestApp.RunAsDefaultUserAsync();
 
         var playerId = await TestApp.SendAsync(
-            new CreatePlayerCommand { DisplayName = "Initial Player" }
+            new RegisterPlayerCommand { DisplayName = "Initial Player" }
         );
 
-        var command = new UpdatePlayerCommand { Id = playerId, DisplayName = "Updated Player" };
+        var command = new RenamePlayerCommand { Id = playerId, DisplayName = "Updated Player" };
 
         await TestApp.SendAsync(command);
 
