@@ -1,18 +1,17 @@
-using System.Diagnostics.CodeAnalysis;
 using PipAndIvory.Application.Common.Interfaces;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-namespace PipAndIvory.Application.Players.Commands.UpdatePlayer;
+namespace PipAndIvory.Application.Players.Commands.RenamePlayer;
 
 /// <summary>
 /// Command to update an existing player's mutable fields.
 /// </summary>
 /// <remarks>
-/// This command is intended to be handled by <see cref="UpdatePlayerCommandHandler"/>.
+/// This command is intended to be handled by <see cref="RenamePlayerCommandHandler"/>.
 /// Only fields that are present on the command will be applied to the entity (in this file,
 /// only <see cref="DisplayName"/> is mutable).
 /// </remarks>
-public record UpdatePlayerCommand : IRequest
+public record RenamePlayerCommand : IRequest
 {
     /// <summary>
     /// The identifier of the player to update.
@@ -22,19 +21,19 @@ public record UpdatePlayerCommand : IRequest
     /// <summary>
     /// The new display name for the player. May be <c>null</c> if no change is requested,
     /// but when provided it must satisfy validation rules enforced by
-    /// <see cref="UpdatePlayerCommandValidator"/>.
+    /// <see cref="RenamePlayerCommandValidator"/>.
     /// </summary>
     public string? DisplayName { get; init; }
 }
 
 /// <summary>
-/// Validates instances of <see cref="UpdatePlayerCommand"/>.
+/// Validates instances of <see cref="RenamePlayerCommand"/>.
 /// </summary>
 /// <remarks>
 /// Uses FluentValidation to enforce command-level invariants. Additional domain checks
 /// (for example ensuring uniqueness) can be added here if required.
 /// </remarks>
-public class UpdatePlayerCommandValidator : AbstractValidator<UpdatePlayerCommand>
+public class RenamePlayerCommandValidator : AbstractValidator<RenamePlayerCommand>
 {
     private readonly IApplicationDbContext _context;
 
@@ -42,7 +41,7 @@ public class UpdatePlayerCommandValidator : AbstractValidator<UpdatePlayerComman
     /// Creates a new validator instance.
     /// </summary>
     /// <param name="context">The application database context. Provided so rules can use the DB if needed.</param>
-    public UpdatePlayerCommandValidator(IApplicationDbContext context)
+    public RenamePlayerCommandValidator(IApplicationDbContext context)
     {
         _context = context;
 
@@ -52,7 +51,7 @@ public class UpdatePlayerCommandValidator : AbstractValidator<UpdatePlayerComman
 }
 
 /// <summary>
-/// Handles <see cref="UpdatePlayerCommand"/> messages.
+/// Handles <see cref="RenamePlayerCommand"/> messages.
 /// </summary>
 /// <remarks>
 /// Responsibilities:
@@ -61,7 +60,7 @@ public class UpdatePlayerCommandValidator : AbstractValidator<UpdatePlayerComman
 /// - Apply updates from the command to the entity.
 /// - Persist changes to the database.
 /// </remarks>
-public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand>
+public class RenamePlayerCommandHandler : IRequestHandler<RenamePlayerCommand>
 {
     private readonly IApplicationDbContext _context;
 
@@ -69,7 +68,7 @@ public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand>
     /// Constructs the handler.
     /// </summary>
     /// <param name="context">The application database context used to query and persist players.</param>
-    public UpdatePlayerCommandHandler(IApplicationDbContext context)
+    public RenamePlayerCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }
@@ -81,7 +80,7 @@ public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand>
     /// <param name="request">The update command containing the target player id and updated data.</param>
     /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <exception cref="Exception">Thrown by guard if the target player is not found.</exception>
-    public async Task Handle(UpdatePlayerCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RenamePlayerCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Players.FindAsync([request.Id], cancellationToken);
 

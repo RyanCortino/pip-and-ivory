@@ -2,9 +2,9 @@ using PipAndIvory.Application.Common.Interfaces;
 using PipAndIvory.Domain.ValueObjects;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-namespace PipAndIvory.Application.Players.Commands.RecordMatch;
+namespace PipAndIvory.Application.Players.Commands.RecordGameResult;
 
-public record RecordMatchCommand : IRequest
+public record RecordGameResultCommand : IRequest
 {
     public PlayerId PlayerId { get; init; }
 
@@ -15,9 +15,9 @@ public record RecordMatchCommand : IRequest
     public int Score { get; init; }
 }
 
-public class RecordMatchCommandValidator : AbstractValidator<RecordMatchCommand>
+public class RecordGameResultCommandValidator : AbstractValidator<RecordGameResultCommand>
 {
-    public RecordMatchCommandValidator()
+    public RecordGameResultCommandValidator()
     {
         RuleFor(x => x.PlayerId)
             .Must(pid => pid.Value != Guid.Empty)
@@ -34,11 +34,11 @@ public class RecordMatchCommandValidator : AbstractValidator<RecordMatchCommand>
 }
 
 public class RecordMatchCommandHandler(IApplicationDbContext context)
-    : IRequestHandler<RecordMatchCommand>
+    : IRequestHandler<RecordGameResultCommand>
 {
     private readonly IApplicationDbContext _context = context;
 
-    public async Task Handle(RecordMatchCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RecordGameResultCommand request, CancellationToken cancellationToken)
     {
         var player = await _context.Players.FindAsync([request.PlayerId], cancellationToken);
 
