@@ -1,16 +1,16 @@
-﻿using PipAndIvory.Application.Players.Commands.CreatePlayer;
+﻿using PipAndIvory.Application.Players.Commands.RegisterPlayer;
 using PipAndIvory.Domain.Entities;
 
 namespace PipAndIvory.Application.FunctionalTests.Players.Commands;
 
-public class CreatePlayerTests : TestBase
+public class RegisterPlayerTests : TestBase
 {
     [Test]
     public async Task ShouldCreatePlayer()
     {
         var userId = await TestApp.RunAsDefaultUserAsync();
 
-        var command = new CreatePlayerCommand { DisplayName = "Alice" };
+        var command = new RegisterPlayerCommand { DisplayName = "Alice" };
 
         var playerId = await TestApp.SendAsync(command);
 
@@ -29,7 +29,7 @@ public class CreatePlayerTests : TestBase
     {
         var userId = await TestApp.RunAsDefaultUserAsync();
 
-        var command = new CreatePlayerCommand();
+        var command = new RegisterPlayerCommand();
 
         var playerId = await TestApp.SendAsync(command);
 
