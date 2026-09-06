@@ -1,17 +1,17 @@
-﻿using PipAndIvory.Application.Players.Commands.CreatePlayer;
-using PipAndIvory.Application.Players.Commands.RecordMatch;
+﻿using PipAndIvory.Application.Players.Commands.RecordGameResult;
+using PipAndIvory.Application.Players.Commands.RegisterPlayer;
 using PipAndIvory.Domain.Entities;
 using PipAndIvory.Domain.ValueObjects;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.FunctionalTests.Players.Commands;
 
-public class RecordMatchTests : TestBase
+public class RecordGameResultTests : TestBase
 {
     [Test]
     public async Task ShouldRequireValidPlayerId()
     {
-        var command = new RecordMatchCommand
+        var command = new RecordGameResultCommand
         {
             PlayerId = PlayerId.New(),
             Won = true,
@@ -27,10 +27,10 @@ public class RecordMatchTests : TestBase
         var userId = await TestApp.RunAsDefaultUserAsync();
 
         var playerId = await TestApp.SendAsync(
-            new CreatePlayerCommand { DisplayName = "Test Player" }
+            new RegisterPlayerCommand { DisplayName = "Test Player" }
         );
 
-        var command = new RecordMatchCommand
+        var command = new RecordGameResultCommand
         {
             PlayerId = playerId,
             Gamemode = GameVariant.Block,
