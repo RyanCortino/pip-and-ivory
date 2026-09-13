@@ -2,32 +2,40 @@
 
 namespace PipAndIvory.Domain.Entities;
 
-public readonly record struct GameId(Guid Value) { }
-
 public class Game : BaseAuditableEntity<GameId>
 {
     /// <summary>
     /// The selected game variant/mode for this game instance.
     /// Defaults to <see cref="GameVariant.Block"/>.
     /// </summary>
-    public GameVariant Gamemode { get; set; } = GameVariant.Block;
+    public GameVariant GameVariant { get; set; } = GameVariant.Block;
 
-    public int ScoreToWin { get; private set; }
+    public IList<Participant> Participants { get; private set; } = new List<Participant>();
 
-    public GameStatus Status { get; private set; } = GameStatus.InProgress;
+    public static Game Start(GameVariant gameVariant, IList<PlayerId> playerIds)
+    {
+        var participants = playerIds.Select(pid => new Participant { Id = pid }).ToList();
 
-    public IList<Participant> Participants { get; private set; } = [];
+        var game = new Game
+        {
+            Id = GameId.New(),
+            GameVariant = gameVariant,
+            Participants = participants,
+        };
 
-    public IList<Round> Rounds { get; private set; } = [];
-
-    public Round CurrentRound => Rounds[^1];
+        return game;
+    }
 }
 
 public class Participant : BaseEntity<PlayerId>
 {
-    public int CurrentScore { get; private set; }
+    public GameId GameId { get; set; }
 
-    public bool IsWinner { get; private set; }
+    public int CurrentScore { get; set; }
+
+    public bool IsWinner { get; set; }
+
+    public Game Game { get; set; } = null!;
 }
 
 public class Round : BaseEntity<RoundId>;

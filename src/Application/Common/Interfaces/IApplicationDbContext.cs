@@ -10,5 +10,7 @@ public interface IApplicationDbContext
 
     DbSet<Player> Players { get; }
 
+    DbSet<Game> Games { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
