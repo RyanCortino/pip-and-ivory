@@ -1,10 +1,11 @@
-using PipAndIvory.Domain.Constants;
-using PipAndIvory.Infrastructure.Data;
-using PipAndIvory.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PipAndIvory.Domain.Constants;
+using PipAndIvory.Domain.Entities;
+using PipAndIvory.Infrastructure.Data;
+using PipAndIvory.Infrastructure.Identity;
 
 namespace PipAndIvory.Application.FunctionalTests.Infrastructure;
 
@@ -42,10 +43,18 @@ public static class TestApp
 
     public static async Task<string> RunAsAdministratorAsync()
     {
-        return await RunAsUserAsync("administrator@local", "Administrator1234!", [Roles.Administrator]);
+        return await RunAsUserAsync(
+            "administrator@local",
+            "Administrator1234!",
+            [Roles.Administrator]
+        );
     }
 
-    public static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
+    public static async Task<string> RunAsUserAsync(
+        string userName,
+        string password,
+        string[] roles
+    )
     {
         using var scope = FunctionalTestSetup.ScopeFactory.CreateScope();
 
@@ -70,7 +79,7 @@ public static class TestApp
         if (result.Succeeded)
         {
             _userId = user.Id;
-            _roles = [..roles];
+            _roles = [.. roles];
             return _userId;
         }
 
@@ -97,7 +106,24 @@ public static class TestApp
 
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        return await context.FindAsync<TEntity>(keyValues);
+        //return await context.FindAsync<TEntity>(keyValues);
+        var entity = await context.FindAsync<TEntity>(keyValues);
+
+        if (entity is null)
+            return null;
+
+        var entityType = context.Model.FindEntityType(typeof(TEntity));
+
+        if (entityType is null)
+            return entity;
+
+        var entry = context.Entry(entity);
+
+        //load all collection navigations for the entity type
+        foreach (var nav in entityType.GetNavigations().Where(n => n.IsCollection))
+            await entry.Collection(nav.Name).LoadAsync();
+
+        return entity;
     }
 
     public static async Task AddAsync<TEntity>(TEntity entity)
@@ -112,7 +138,8 @@ public static class TestApp
         await context.SaveChangesAsync();
     }
 
-    public static async Task<int> CountAsync<TEntity>() where TEntity : class
+    public static async Task<int> CountAsync<TEntity>()
+        where TEntity : class
     {
         using var scope = FunctionalTestSetup.ScopeFactory.CreateScope();
 
