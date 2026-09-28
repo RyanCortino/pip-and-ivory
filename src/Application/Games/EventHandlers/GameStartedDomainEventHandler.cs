@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using PipAndIvory.Application.Games.Commands.SetupGame;
 using PipAndIvory.Domain.Events;
 
 namespace PipAndIvory.Application.Games.EventHandlers;
@@ -22,9 +23,9 @@ public class GameStartedDomainEventHandler(
             notification.GetType().Name
         );
 
-        //await _mediator.Send(
-        //    new SetupGameCommand { GameId = notification.Game.Id },
-        //    cancellationToken
-        //);
+        await _mediator.Send(
+            new SetupGameCommand { GameId = notification.Game.Id },
+            cancellationToken
+        );
     }
 }

@@ -24,6 +24,8 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
             g => g.Participants,
             participantsBuilder =>
             {
+                participantsBuilder.ToTable("Participants");
+
                 participantsBuilder.WithOwner().HasForeignKey("GameId");
 
                 participantsBuilder.HasKey("Id");
