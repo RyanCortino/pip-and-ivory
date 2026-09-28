@@ -11,7 +11,7 @@ public class RenamePlayerTests : TestBase
     [Test]
     public async Task ShouldRequireValidPlayerId()
     {
-        var command = new RenamePlayerCommand { Id = PlayerId.New(), DisplayName = "Name" };
+        var command = new RenamePlayerCommand { Id = PlayerId.New, DisplayName = "Name" };
         await Should.ThrowAsync<NotFoundException>(() => TestApp.SendAsync(command));
     }
 
