@@ -4,18 +4,18 @@ using PipAndIvory.Domain.Enums;
 using PipAndIvory.Domain.ValueObjects;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-namespace PipAndIvory.Application.Games.Commands.StartGame;
+namespace PipAndIvory.Application.Games.Commands.CreateGame;
 
-public record StartGameCommand : IRequest<GameId>
+public record CreateGameCommand : IRequest<GameId>
 {
     public GameModes GameMode { get; init; } = GameModes.Block;
 
     public IList<PlayerId> PlayerIds { get; init; } = [];
 }
 
-public class StartGameCommandValidator : AbstractValidator<StartGameCommand>
+public class CreateGameCommandValidator : AbstractValidator<CreateGameCommand>
 {
-    public StartGameCommandValidator()
+    public CreateGameCommandValidator()
     {
         RuleFor(v => v.GameMode)
             .NotNull()
@@ -29,18 +29,14 @@ public class StartGameCommandValidator : AbstractValidator<StartGameCommand>
     }
 }
 
-public class StartGameCommandHandler : IRequestHandler<StartGameCommand, GameId>
+public class CreateGameCommandHandler(IApplicationDbContext context)
+    : IRequestHandler<CreateGameCommand, GameId>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IApplicationDbContext _context = context;
 
-    public StartGameCommandHandler(IApplicationDbContext context)
+    public async Task<GameId> Handle(CreateGameCommand request, CancellationToken cancellationToken)
     {
-        _context = context;
-    }
-
-    public async Task<GameId> Handle(StartGameCommand request, CancellationToken cancellationToken)
-    {
-        var entity = Game.Start(
+        var entity = Game.Create(
             request.GameMode is GameModes.Block ? GameVariant.Block : GameVariant.Draw,
             request.PlayerIds
         );

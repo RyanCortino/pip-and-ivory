@@ -1,14 +1,21 @@
-﻿using PipAndIvory.Application.Games.Commands.StartGame;
+﻿using PipAndIvory.Application.Common.Exceptions;
+using PipAndIvory.Application.Games.Commands.CreateGame;
 using PipAndIvory.Application.Players.Commands.RegisterPlayer;
 using PipAndIvory.Domain.Entities;
-using PipAndIvory.Domain.Enums;
 using PipAndIvory.Domain.ValueObjects;
-using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.FunctionalTests.Games.Commands;
 
-public class StartGameTests : TestBase
+public class CreateGameTests : TestBase
 {
+    [Test]
+    public async Task ShouldRequireMinimumFields()
+    {
+        var command = new CreateGameCommand();
+
+        await Should.ThrowAsync<ValidationException>(() => TestApp.SendAsync(command));
+    }
+
     [Test]
     public async Task ShouldCreateDefaultGame_HasDefaultVariantAndTwoParticipants()
     {
@@ -22,7 +29,7 @@ public class StartGameTests : TestBase
             new RegisterPlayerCommand { DisplayName = "Player 2" }
         );
 
-        var command = new StartGameCommand { PlayerIds = [playerOneId, playerTwoId] };
+        var command = new CreateGameCommand { PlayerIds = [playerOneId, playerTwoId] };
 
         var gameId = await TestApp.SendAsync(command);
 
