@@ -1,4 +1,5 @@
 using PipAndIvory.Application.Common.Interfaces;
+using PipAndIvory.Domain.Entities;
 using PipAndIvory.Domain.ValueObjects;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
@@ -6,7 +7,7 @@ namespace PipAndIvory.Application.Players.Commands.RecordGameResult;
 
 public record RecordGameResultCommand : IRequest
 {
-    public required PlayerId PlayerId { get; init; }
+    public PlayerId? PlayerId { get; init; }
 
     public GameVariant Gamemode { get; init; } = GameVariant.Block;
 
@@ -19,9 +20,7 @@ public class RecordGameResultCommandValidator : AbstractValidator<RecordGameResu
 {
     public RecordGameResultCommandValidator()
     {
-        RuleFor(x => x.PlayerId)
-            .Must(pid => pid.Value != Guid.Empty)
-            .WithMessage("A valid PlayerId must be provided.");
+        RuleFor(x => x.PlayerId).NotNull().WithMessage("A valid PlayerId must be provided.");
 
         RuleFor(x => x.Gamemode)
             .NotNull()
@@ -42,7 +41,9 @@ public class RecordMatchCommandHandler(IApplicationDbContext context)
     {
         var player = await _context.Players.FindAsync([request.PlayerId], cancellationToken);
 
-        player?.RecordGameResult(request.Gamemode, request.Won, request.Score);
+        Guard.Against.NotFound(request.PlayerId!.ToString(), player);
+
+        player.RecordGameResult(request.Gamemode, request.Won, request.Score);
 
         await _context.SaveChangesAsync(cancellationToken);
     }

@@ -1,4 +1,5 @@
 using PipAndIvory.Application.Common.Interfaces;
+using PipAndIvory.Domain.Entities;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.Players.Commands.RenamePlayer;
@@ -16,7 +17,7 @@ public record RenamePlayerCommand : IRequest
     /// <summary>
     /// The identifier of the player to update.
     /// </summary>
-    public required PlayerId Id { get; init; }
+    public PlayerId? PlayerId { get; init; }
 
     /// <summary>
     /// The new display name for the player. May be <c>null</c> if no change is requested,
@@ -35,17 +36,14 @@ public record RenamePlayerCommand : IRequest
 /// </remarks>
 public class RenamePlayerCommandValidator : AbstractValidator<RenamePlayerCommand>
 {
-    private readonly IApplicationDbContext _context;
-
     /// <summary>
     /// Creates a new validator instance.
     /// </summary>
     /// <param name="context">The application database context. Provided so rules can use the DB if needed.</param>
-    public RenamePlayerCommandValidator(IApplicationDbContext context)
+    public RenamePlayerCommandValidator()
     {
-        _context = context;
-
         // Ensure a non-empty display name when provided and constrain its length.
+        RuleFor(v => v.PlayerId).NotNull();
         RuleFor(v => v.DisplayName).NotEmpty().MaximumLength(70);
     }
 }
@@ -82,10 +80,15 @@ public class RenamePlayerCommandHandler : IRequestHandler<RenamePlayerCommand>
     /// <exception cref="Exception">Thrown by guard if the target player is not found.</exception>
     public async Task Handle(RenamePlayerCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Players.FindAsync([request.Id], cancellationToken);
+        var player = await _context.Players.FindAsync([request.PlayerId], cancellationToken);
 
-        // Apply changes from the command to the entity.
-        entity?.DisplayName = request.DisplayName;
+        Guard.Against.NotFound(request.PlayerId!.ToString(), player);
+
+        if (request.DisplayName is not null)
+        {
+            // Apply changes from the command to the entity.
+            player.DisplayName = request.DisplayName;
+        }
 
         // Persist changes.
         await _context.SaveChangesAsync(cancellationToken);
