@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using PipAndIvory.Application.Games.Commands.StartGame;
+using PipAndIvory.Application.Games.Commands.CreateGame;
 
 namespace PipAndIvory.Web.Endpoints;
 
@@ -14,7 +14,7 @@ public class Games : IEndpointGroup
 
     [EndpointSummary("Start a new Game")]
     [EndpointDescription("Starts a new game with the specified players and game variant")]
-    public static async Task<Created<Guid>> StartGame(ISender sender, StartGameCommand command)
+    public static async Task<Created<Guid>> StartGame(ISender sender, CreateGameCommand command)
     {
         var gameId = await sender.Send(command);
 

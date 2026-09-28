@@ -51,7 +51,7 @@ public class Players : IEndpointGroup
         RenamePlayerCommand command
     )
     {
-        if (id != command.Id.Value)
+        if (id != command.PlayerId?.Value)
             return TypedResults.BadRequest();
 
         await sender.Send(command);
@@ -69,7 +69,7 @@ public class Players : IEndpointGroup
         RecordGameResultCommand command
     )
     {
-        if (id != command.PlayerId.Value)
+        if (id != command.PlayerId?.Value)
             return TypedResults.BadRequest();
 
         await sender.Send(command);
