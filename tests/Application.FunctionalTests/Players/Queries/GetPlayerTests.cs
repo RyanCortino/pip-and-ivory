@@ -25,7 +25,7 @@ public class GetPlayerTests : TestBase
 
         var TestDisplayName = "Test Player";
 
-        var player = new Player { Id = PlayerId.New(), DisplayName = TestDisplayName };
+        var player = new Player { Id = PlayerId.New, DisplayName = TestDisplayName };
 
         player.RecordGameResult(GameVariant.Block, true, 100);
 

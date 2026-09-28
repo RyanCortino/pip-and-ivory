@@ -6,7 +6,7 @@ namespace PipAndIvory.Application.Players.Commands.RecordGameResult;
 
 public record RecordGameResultCommand : IRequest
 {
-    public PlayerId PlayerId { get; init; }
+    public required PlayerId PlayerId { get; init; }
 
     public GameVariant Gamemode { get; init; } = GameVariant.Block;
 
@@ -42,9 +42,7 @@ public class RecordMatchCommandHandler(IApplicationDbContext context)
     {
         var player = await _context.Players.FindAsync([request.PlayerId], cancellationToken);
 
-        Guard.Against.NotFound(request.PlayerId, player);
-
-        player.RecordGameResult(request.Gamemode, request.Won, request.Score);
+        player?.RecordGameResult(request.Gamemode, request.Won, request.Score);
 
         await _context.SaveChangesAsync(cancellationToken);
     }

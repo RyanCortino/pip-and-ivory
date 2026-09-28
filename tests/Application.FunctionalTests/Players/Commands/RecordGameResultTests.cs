@@ -13,7 +13,7 @@ public class RecordGameResultTests : TestBase
     {
         var command = new RecordGameResultCommand
         {
-            PlayerId = PlayerId.New(),
+            PlayerId = PlayerId.New,
             Won = true,
             Score = 10,
         };

@@ -16,7 +16,7 @@ public record RenamePlayerCommand : IRequest
     /// <summary>
     /// The identifier of the player to update.
     /// </summary>
-    public PlayerId Id { get; init; }
+    public required PlayerId Id { get; init; }
 
     /// <summary>
     /// The new display name for the player. May be <c>null</c> if no change is requested,
@@ -84,11 +84,8 @@ public class RenamePlayerCommandHandler : IRequestHandler<RenamePlayerCommand>
     {
         var entity = await _context.Players.FindAsync([request.Id], cancellationToken);
 
-        // Guard.Against.NotFound will throw a domain-specific exception if the entity is null.
-        Guard.Against.NotFound(request.Id, entity);
-
         // Apply changes from the command to the entity.
-        entity.DisplayName = request.DisplayName;
+        entity?.DisplayName = request.DisplayName;
 
         // Persist changes.
         await _context.SaveChangesAsync(cancellationToken);
