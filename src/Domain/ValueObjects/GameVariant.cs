@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PipAndIvory.Domain.ValueObjects;
+﻿namespace PipAndIvory.Domain.ValueObjects;
 
 /// <summary>
 /// Represents a game variant identified by a short textual <see cref="Code"/>.
