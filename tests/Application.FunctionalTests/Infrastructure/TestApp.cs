@@ -106,24 +106,7 @@ public static class TestApp
 
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        //return await context.FindAsync<TEntity>(keyValues);
-        var entity = await context.FindAsync<TEntity>(keyValues);
-
-        if (entity is null)
-            return null;
-
-        var entityType = context.Model.FindEntityType(typeof(TEntity));
-
-        if (entityType is null)
-            return entity;
-
-        var entry = context.Entry(entity);
-
-        //load all collection navigations for the entity type
-        foreach (var nav in entityType.GetNavigations().Where(n => n.IsCollection))
-            await entry.Collection(nav.Name).LoadAsync();
-
-        return entity;
+        return await context.FindAsync<TEntity>(keyValues);
     }
 
     public static async Task AddAsync<TEntity>(TEntity entity)
