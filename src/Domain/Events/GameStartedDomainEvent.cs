@@ -1,6 +1,9 @@
-﻿namespace PipAndIvory.Domain.Events;
+﻿using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-public class GameStartedDomainEvent(Game game) : BaseEvent
+namespace PipAndIvory.Domain.Events;
+
+public class GameStartedDomainEvent(GameId gameId, IReadOnlyList<PlayerId> players) : BaseEvent
 {
-    public Game Game { get; } = game;
+    public GameId GameId { get; } = gameId;
+    public IReadOnlyList<PlayerId> Players { get; } = players;
 }
