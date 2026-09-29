@@ -3,13 +3,13 @@ using PipAndIvory.Domain.Events;
 
 namespace PipAndIvory.Application.Games.EventHandlers;
 
-public class GameStartedDomainEventHandler(ILogger<GameStartedDomainEventHandler> logger)
-    : INotificationHandler<GameStartedDomainEvent>
+public class RoundStartedDomainEventHandler(ILogger<GameStartedDomainEventHandler> logger)
+    : INotificationHandler<RoundStartedDomainEvent>
 {
     private readonly ILogger<GameStartedDomainEventHandler> _logger = logger;
 
     public async Task Handle(
-        GameStartedDomainEvent notification,
+        RoundStartedDomainEvent notification,
         CancellationToken cancellationToken
     )
     {
