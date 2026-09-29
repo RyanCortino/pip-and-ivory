@@ -1,35 +1,38 @@
+using Microsoft.Extensions.Logging;
 using PipAndIvory.Application.Common.Interfaces;
 using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Events;
 using PipAndIvory.Domain.ValueObjects;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-namespace PipAndIvory.Application.Games.Commands.SetupGame;
+namespace PipAndIvory.Application.Games.Commands.StartRound;
 
-public record SetupGameCommand : IRequest
+public record StartRoundCommand : IRequest
 {
     public GameId GameId { get; init; } = default!;
 }
 
-public class SetupGameCommandHandler(IApplicationDbContext context)
-    : IRequestHandler<SetupGameCommand>
+public class StartRoundCommandHandler(
+    ILogger<StartRoundCommandHandler> logger,
+    IApplicationDbContext context
+) : IRequestHandler<StartRoundCommand>
 {
+    private readonly ILogger<StartRoundCommandHandler> _logger = logger;
     private readonly IApplicationDbContext _context = context;
 
-    public async Task Handle(SetupGameCommand request, CancellationToken cancellationToken)
+    public async Task Handle(StartRoundCommand request, CancellationToken cancellationToken)
     {
-        // Check if the game exists
-        var gameEntity =
-            await _context.Games.FindAsync([request.GameId], cancellationToken)
-            ?? throw new NotFoundException(nameof(Game), request.GameId.ToString());
+        _logger.LogInformation("PipAndIvory Command Request: {Command}", request.GetType().Name);
+
+        var gameEntity = await _context.Games.FindAsync([request.GameId], cancellationToken);
+
+        Guard.Against.NotFound(nameof(gameEntity), gameEntity);
 
         // Create a new round
         var round = new Round
         {
             Id = RoundId.New,
-            GameId = gameEntity.Id,
-
-            // Set the bonyard to a new shuffled deck of bones
-            Boneyard = ShuffledNewDeck(),
+            Boneyard = ShuffledNewDeck(), // Set the bonyard to a new shuffled deck of bones
         };
 
         // Deal hands to each player, removing bones from the boneyard as they're dealt
@@ -37,16 +40,20 @@ public class SetupGameCommandHandler(IApplicationDbContext context)
 
         //round.PlayerHands.AddRange(hands);
 
-        //// Determine the turn order based on the highest weight first bone in each player's hand
-        //List<PlayerId> turnOrder =
-        //[
-        //    .. hands.OrderByDescending(h => h.Bones.First().Weight).Select(h => h.Id),
-        //];
+        // Determine the turn order based on the highest weight first bone in each player's hand
+        List<PlayerId> turnOrder =
+        [
+            .. hands.OrderByDescending(h => h.Bones.First().Weight).Select(h => h.Id),
+        ];
 
         //round.TurnOrder.AddRange(turnOrder);
 
-        // Add the new round to the game entity
-        //gameEntity.Rounds.Add(round);
+        //Add the new round to the game entity
+        round.AddDomainEvent(
+            new RoundStartedDomainEvent(gameEntity.Id, round.Id, turnOrder.First())
+        );
+
+        gameEntity.Rounds.Add(round);
 
         await _context.SaveChangesAsync(cancellationToken);
     }
