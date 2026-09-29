@@ -11,7 +11,7 @@ public class CreateGameTests : TestBase
     [Test]
     public async Task ShouldRequireMinimumFields()
     {
-        var command = new CreateGameCommand();
+        var command = new StartGameCommand();
 
         await Should.ThrowAsync<ValidationException>(() => TestApp.SendAsync(command));
     }
@@ -29,7 +29,7 @@ public class CreateGameTests : TestBase
             new RegisterPlayerCommand { DisplayName = "Player 2" }
         );
 
-        var command = new CreateGameCommand { PlayerIds = [playerOneId, playerTwoId] };
+        var command = new StartGameCommand { PlayerIds = [playerOneId, playerTwoId] };
 
         var gameId = await TestApp.SendAsync(command);
 
