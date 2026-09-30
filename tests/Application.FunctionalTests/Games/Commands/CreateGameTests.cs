@@ -1,5 +1,5 @@
 ﻿using PipAndIvory.Application.Common.Exceptions;
-using PipAndIvory.Application.Games.Commands.CreateGame;
+using PipAndIvory.Application.Games.Commands.StartGame;
 using PipAndIvory.Application.Players.Commands.RegisterPlayer;
 using PipAndIvory.Domain.Entities;
 using PipAndIvory.Domain.ValueObjects;

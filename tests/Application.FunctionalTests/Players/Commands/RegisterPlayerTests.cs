@@ -36,7 +36,7 @@ public class RegisterPlayerTests : TestBase
         var player = await TestApp.FindAsync<Player>(playerId);
 
         player.ShouldNotBeNull();
-        player!.DisplayName.ShouldBeNull();
+        player!.DisplayName.ShouldNotBeNull();
         player.CreatedBy.ShouldBe(userId);
         player.Created.ShouldBe(DateTime.Now, TimeSpan.FromMilliseconds(10000));
         player.LastModifiedBy.ShouldBe(userId);
