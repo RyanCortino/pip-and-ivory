@@ -64,6 +64,9 @@ public class RegisterPlayerCommandHandler : IRequestHandler<RegisterPlayerComman
     {
         var entity = new Player { Id = PlayerId.New, DisplayName = request.DisplayName };
 
+        if (request.DisplayName is null)
+            entity.DisplayName = PlayerId.GenerateFriendlyName(entity.Id);
+
         if (entity.DisplayName is not null)
             entity.DisplayName = entity.DisplayName.Trim();
 
