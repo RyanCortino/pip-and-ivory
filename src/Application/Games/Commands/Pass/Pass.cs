@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.Games.Commands.Pass;
 
-public record PassCommand : IRequest { }
+public record PassCommand(GameId GameId, PlayerId PlayerId) : IRequest { }
 
 public class PassCommandValidator : AbstractValidator<PassCommand> { }
 
