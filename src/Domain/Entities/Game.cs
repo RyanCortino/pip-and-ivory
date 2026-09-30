@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
+﻿using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Domain.Entities;
 
@@ -26,27 +25,22 @@ public class Game : BaseAuditableEntity<GameId>
             game.Participants.Add(participant);
         }
 
-        // Raise the domain event for game start
-        game.AddDomainEvent(new GameStartedDomainEvent(game));
-
         return game;
     }
 
     public GameStatus GameStatus { get; set; }
 
-    public GameVariant? GameVariant { get; set; }
+    public GameVariant GameVariant { get; set; } = GameVariant.Block;
 
     /// <summary>
     /// The list of players in this game instance.
     /// </summary>
     public IList<Participant> Participants { get; private set; } = new List<Participant>();
+
+    /// <summary>
+    /// The list of rounds played in this game instance.
+    /// </summary>
+    public IList<Round> Rounds { get; private set; } = new List<Round>();
+
+    public Round CurrentRound => Rounds.Count > 0 ? Rounds[^1] : null!;
 }
-
-
-//    /// <summary>
-//    /// The list of rounds played in this game instance.
-//    /// </summary>
-//    public IList<Round> Rounds { get; private set; } = new List<Round>();
-
-//    //public Round CurrentRound => Rounds.Count > 0 ? Rounds[^1] : null!;
-//}

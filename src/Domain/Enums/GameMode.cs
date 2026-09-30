@@ -1,6 +1,6 @@
 ﻿namespace PipAndIvory.Domain.Enums;
 
-public enum GameModes
+public enum GameMode
 {
     Block = 0,
     Draw = 1,
