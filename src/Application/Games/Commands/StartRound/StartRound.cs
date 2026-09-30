@@ -36,7 +36,7 @@ public class StartRoundCommandHandler(
         };
 
         // Deal hands to each player, removing bones from the boneyard as they're dealt
-        var hands = DealPlayerHands(round.Id, gameEntity.Participants, round.Boneyard);
+        var hands = DealPlayerHands(gameEntity.Participants, round.Boneyard);
 
         //round.PlayerHands.AddRange(hands);
 
@@ -58,12 +58,9 @@ public class StartRoundCommandHandler(
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    private static List<Hand> DealPlayerHands(
-        RoundId roundId,
-        IList<Participant> participants,
-        List<Bone> boneyard
-    )
+    private static List<Hand> DealPlayerHands(IList<Participant> participants, IList<Bone> boneyard)
     {
+        var drawPile = boneyard.ToList();
         var handSize = participants.Count <= 3 ? 7 : 5;
 
         var hands = new List<Hand>();
@@ -71,19 +68,14 @@ public class StartRoundCommandHandler(
         // Assuming you have access to the game entity and its participants
         foreach (var participant in participants)
         {
-            List<Bone> bones = [.. boneyard.Take(handSize)];
+            List<Bone> bones = [.. drawPile.Take(handSize)];
 
-            hands.Add(
-                new Hand
-                {
-                    Id = participant.Id,
-                    RoundId = roundId,
-                    Bones = bones,
-                }
-            );
+            hands.Add(new Hand { Id = participant.Id, Bones = bones });
 
-            boneyard.RemoveRange(0, handSize);
+            drawPile.RemoveRange(0, handSize);
         }
+
+        boneyard = drawPile;
 
         return hands;
     }
