@@ -53,7 +53,7 @@ public class StartRoundCommandHandler(
             new RoundStartedDomainEvent(gameEntity.Id, round.Id, turnOrder.First())
         );
 
-        gameEntity.Rounds.Add(round);
+        gameEntity.AddRound(round);
 
         await _context.SaveChangesAsync(cancellationToken);
     }

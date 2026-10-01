@@ -17,13 +17,16 @@ public class Game : BaseAuditableEntity<GameId>
             GameStatus = GameStatus.InProgress,
         };
 
-        // Add participants to the game
         foreach (var playerId in playerIds)
         {
             var participant = new Participant { Id = playerId };
 
             game.Participants.Add(participant);
         }
+
+        game.AddDomainEvent(
+            new GameStartedDomainEvent(game.Id, [.. game.Participants.Select(g => g.Id)])
+        );
 
         return game;
     }
@@ -32,15 +35,24 @@ public class Game : BaseAuditableEntity<GameId>
 
     public GameVariant GameVariant { get; set; } = GameVariant.Block;
 
-    /// <summary>
-    /// The list of players in this game instance.
-    /// </summary>
-    public IList<Participant> Participants { get; private set; } = new List<Participant>();
+    public IList<Participant> Participants { get; private set; } = [];
 
-    /// <summary>
-    /// The list of rounds played in this game instance.
-    /// </summary>
-    public IList<Round> Rounds { get; private set; } = new List<Round>();
+    public IList<Round> Rounds { get; private set; } = [];
 
     public Round CurrentRound => Rounds.Count > 0 ? Rounds[^1] : null!;
+
+    public void StartNewRound()
+    {
+        // Create a new round
+        var round = Round.Create(Bone.StandardDoubleSixSet);
+
+        round.ShuffleBoneyard();
+
+        round.StartRound(Participants);
+
+        // Raise a domain event to indicate that the round has started
+        round.AddDomainEvent(new RoundStartedDomainEvent(Id, round.Id, round.CurrentTurn));
+
+        Rounds.Add(round);
+    }
 }
