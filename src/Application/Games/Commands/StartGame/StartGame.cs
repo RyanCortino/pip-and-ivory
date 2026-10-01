@@ -48,10 +48,6 @@ public class StartGameCommandHandler(
             request.PlayerIds
         );
 
-        game.AddDomainEvent(
-            new GameStartedDomainEvent(game.Id, [.. game.Participants.Select(g => g.Id)])
-        );
-
         _context.Games.Add(game);
 
         await _context.SaveChangesAsync(cancellationToken);
