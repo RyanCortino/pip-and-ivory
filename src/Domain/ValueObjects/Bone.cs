@@ -7,7 +7,7 @@ namespace PipAndIvory.Domain.ValueObjects;
 /// </summary>
 /// <remarks>
 /// A <see cref="Bone"/> holds two pips (spots) where a missing second pip represents a double (both pips are the same).
-/// This type restricts instances to the standard double-six domino set via <see cref="From(int, int?)"/> and <see cref="SupportedBones"/>.
+/// This type restricts instances to the standard double-six domino set via <see cref="From(int, int?)"/> and <see cref="StandardDoubleSixSet"/>.
 /// </remarks>
 public partial class Bone(int pip1, int pip2) : ValueObject
 {
@@ -33,7 +33,7 @@ public partial class Bone(int pip1, int pip2) : ValueObject
             throw new UnsupportedBoneException(bone);
         }
 
-        if (!SupportedBones.Contains(bone))
+        if (!StandardDoubleSixSet.Contains(bone))
         {
             throw new UnsupportedBoneException(bone);
         }
@@ -200,7 +200,7 @@ public partial class Bone(int pip1, int pip2) : ValueObject
     /// <summary>
     /// Enumerates all bones in the supported standard double-six set.
     /// </summary>
-    public static IEnumerable<Bone> SupportedBones
+    public static IEnumerable<Bone> StandardDoubleSixSet
     {
         get
         {
