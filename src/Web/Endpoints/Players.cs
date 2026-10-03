@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using PipAndIvory.Application.Players.Commands.RecordGameResult;
 using PipAndIvory.Application.Players.Commands.RegisterPlayer;
 using PipAndIvory.Application.Players.Commands.RenamePlayer;
 using PipAndIvory.Application.Players.Queries.GetPlayer;
@@ -15,7 +14,6 @@ public class Players : IEndpointGroup
         groupBuilder.MapGet(GetPlayer);
         groupBuilder.MapPost(CreatePlayer);
         groupBuilder.MapPut(UpdatePlayer, "{id}");
-        groupBuilder.MapPatch(RecordMatch, "{id}");
     }
 
     [EndpointSummary("Get a Player")]
@@ -49,24 +47,6 @@ public class Players : IEndpointGroup
         ISender sender,
         Guid id,
         RenamePlayerCommand command
-    )
-    {
-        if (id != command.PlayerId?.Value)
-            return TypedResults.BadRequest();
-
-        await sender.Send(command);
-
-        return TypedResults.NoContent();
-    }
-
-    [EndpointSummary("Record a Match for a Player")]
-    [EndpointDescription(
-        "Records a match for the specified player. The ID in the URL must match the ID in the payload."
-    )]
-    public static async Task<Results<NoContent, BadRequest>> RecordMatch(
-        ISender sender,
-        Guid id,
-        RecordGameResultCommand command
     )
     {
         if (id != command.PlayerId?.Value)

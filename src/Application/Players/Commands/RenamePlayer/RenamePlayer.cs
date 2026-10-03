@@ -84,13 +84,13 @@ public class RenamePlayerCommandHandler : IRequestHandler<RenamePlayerCommand>
 
         Guard.Against.NotFound(request.PlayerId!.ToString(), player);
 
-        if (request.DisplayName is not null)
+        if (player.DisplayName != request.DisplayName)
         {
             // Apply changes from the command to the entity.
-            player.DisplayName = request.DisplayName;
-        }
+            player.Rename(request.DisplayName);
 
-        // Persist changes.
-        await _context.SaveChangesAsync(cancellationToken);
+            // Persist changes.
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

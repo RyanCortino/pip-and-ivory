@@ -25,6 +25,14 @@ public class Player : BaseAuditableEntity<PlayerId>
     /// </summary>
     public GameStatistics DrawGameStats { get; private set; } = GameStatistics.None;
 
+    public void Rename(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            name = GenerateFriendlyName();
+
+        DisplayName = name.Trim();
+    }
+
     /// <summary>
     /// Records the outcome of a finished game and updates the appropriate per-variant statistics.
     /// </summary>
@@ -51,5 +59,55 @@ public class Player : BaseAuditableEntity<PlayerId>
         }
 
         BlockGameStats = BlockGameStats.RecordGame(won, score);
+    }
+
+    private string GenerateFriendlyName()
+    {
+        string[] adjectives =
+        [
+            "Sneaky",
+            "Swift",
+            "Mighty",
+            "Frosty",
+            "Golden",
+            "Shadow",
+            "Cosmic",
+            "Cranky",
+            "Brave",
+            "Lively",
+        ];
+
+        string[] nouns =
+        [
+            "Panda",
+            "Raptor",
+            "Knight",
+            "Wizard",
+            "Badger",
+            "Falcon",
+            "Coyote",
+            "Ninja",
+            "Goblin",
+            "Phoenix",
+        ];
+
+        // Extract the raw 16 bytes from the GUID
+        byte[] bytes = Id.Value.ToByteArray();
+
+        // Convert chunks of bytes into integers using BitConverter
+        // BitConverter.ToInt32 requires 4 bytes
+        int adjIndex = Math.Abs(BitConverter.ToInt32(bytes, 0));
+        int nounIndex = Math.Abs(BitConverter.ToInt32(bytes, 4));
+        int suffixNumber = Math.Abs(BitConverter.ToInt32(bytes, 8));
+
+        // Use modulo (%) to map the large integers to your list sizes
+        string selectedAdj = adjectives[adjIndex % adjectives.Length];
+        string selectedNoun = nouns[nounIndex % nouns.Length];
+
+        // Create a 4 - digit numeric suffix(0000 to 9999) for extra safety
+        int finalSuffix = suffixNumber % 10000;
+
+        // Combine them into a display-friendly name
+        return $"{selectedAdj}{selectedNoun}#{finalSuffix:D4}";
     }
 }

@@ -5,7 +5,7 @@ using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.Players.Commands.RecordGameResult;
 
-public record RecordGameResultCommand : IRequest
+internal record RecordGameResultCommand : IRequest
 {
     public PlayerId? PlayerId { get; init; }
 
@@ -16,7 +16,7 @@ public record RecordGameResultCommand : IRequest
     public int Score { get; init; }
 }
 
-public class RecordGameResultCommandValidator : AbstractValidator<RecordGameResultCommand>
+internal class RecordGameResultCommandValidator : AbstractValidator<RecordGameResultCommand>
 {
     public RecordGameResultCommandValidator()
     {
@@ -32,7 +32,7 @@ public class RecordGameResultCommandValidator : AbstractValidator<RecordGameResu
     }
 }
 
-public class RecordMatchCommandHandler(IApplicationDbContext context)
+internal class RecordMatchCommandHandler(IApplicationDbContext context)
     : IRequestHandler<RecordGameResultCommand>
 {
     private readonly IApplicationDbContext _context = context;

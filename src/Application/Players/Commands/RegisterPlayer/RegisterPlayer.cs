@@ -62,13 +62,9 @@ public class RegisterPlayerCommandHandler : IRequestHandler<RegisterPlayerComman
         CancellationToken cancellationToken
     )
     {
-        var entity = new Player { Id = PlayerId.New, DisplayName = request.DisplayName };
+        var entity = new Player { Id = PlayerId.New };
 
-        if (request.DisplayName is null)
-            entity.DisplayName = PlayerId.GenerateFriendlyName(entity.Id);
-
-        if (entity.DisplayName is not null)
-            entity.DisplayName = entity.DisplayName.Trim();
+        entity.Rename(request.DisplayName);
 
         _context.Players.Add(entity);
 
