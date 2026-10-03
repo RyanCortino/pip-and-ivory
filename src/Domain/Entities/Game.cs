@@ -55,4 +55,59 @@ public class Game : BaseAuditableEntity<GameId>
 
         Rounds.Add(round);
     }
+
+    public void Play(PlayerId playerId, Bone bone, BranchId branchId)
+    {
+        EnsureInProgress();
+
+        CurrentRound.PlayTile(Id, playerId, bone, branchId);
+
+        // Check if the player has emptied their hand
+        if (CurrentRound.PlayerHands.First(h => h.Id == playerId).Bones.Count == 0)
+        {
+            CompleteRound(RoundEndReason.Domino);
+        }
+    }
+
+    public void Pass(PlayerId playerId)
+    {
+        EnsureInProgress();
+
+        CurrentRound.Pass(Id, playerId);
+
+        // Check if the round is blocked after the player passes
+        if (CurrentRound.IsBlocked)
+        {
+            CompleteRound(RoundEndReason.Blocked);
+        }
+    }
+
+    public void DrawFromStock(PlayerId playerId)
+    {
+        EnsureInProgress();
+
+        if (GameVariant != GameVariant.Draw)
+            throw new InvalidOperationException(
+                "Only games with the 'Draw' variant can draw from the stock."
+            );
+
+        CurrentRound.DrawFromStock(Id, playerId);
+    }
+
+    public void CompleteRound(RoundEndReason roundEndReason)
+    {
+        EnsureInProgress();
+
+        var result = CurrentRound.Complete(roundEndReason);
+
+        AddDomainEvent(new RoundEndedDomainEvent(Id, result));
+    }
+
+    private void EnsureInProgress()
+    {
+        if (GameStatus != GameStatus.InProgress)
+            throw new InvalidOperationException(
+                "The game is not in progress and cannot be modified."
+            );
+    }
 }

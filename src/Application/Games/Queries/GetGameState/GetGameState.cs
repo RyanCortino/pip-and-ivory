@@ -88,7 +88,14 @@ public class RoundDto
 {
     public string? Id { get; init; }
     public string? CurrentTurnPlayerId { get; init; }
+    public IReadOnlyList<OpenEndDto> OpenEnds { get; init; } = [];
     public IReadOnlyList<HandDto> PlayerHands { get; init; } = [];
+}
+
+public class OpenEndDto
+{
+    public string? BranchId { get; init; }
+    public int Value { get; init; }
 }
 
 public class HandDto

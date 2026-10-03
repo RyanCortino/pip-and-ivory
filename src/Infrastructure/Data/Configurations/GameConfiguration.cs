@@ -85,7 +85,7 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
 
                 roundsBuilder.OwnsMany<PlayerId>(r => r.TurnOrder);
 
-                roundsBuilder.OwnsMany<Bone>(r => r.Boneyard);
+                roundsBuilder.OwnsMany<Bone>(r => r.Stock);
 
                 roundsBuilder.OwnsMany<Move>(r => r.Moves);
 
