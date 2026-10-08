@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PipAndIvory.Domain.Entities;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
-using PipAndIvory.Infrastructure.Data.Configurations.ValueConverters;
+using PipAndIvory.Infrastructure.Data.ValueConverters;
 
 namespace PipAndIvory.Infrastructure.Data.Configurations;
 
