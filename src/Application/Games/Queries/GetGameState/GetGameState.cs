@@ -66,7 +66,8 @@ public class GameDto
                     d => d.CurrentTurnPlayerId,
                     opt => opt.MapFrom(r => r.CurrentTurn.ToString())
                 )
-                .ForMember(d => d.PlayerHands, opt => opt.MapFrom(r => r.PlayerHands));
+                .ForMember(d => d.PlayerHands, opt => opt.MapFrom(r => r.PlayerHands))
+                .ForMember(d => d.OpenEnds, opt => opt.MapFrom(r => r.GetOpenEnds));
 
             CreateMap<Hand, HandDto>();
 

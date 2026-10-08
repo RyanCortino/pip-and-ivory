@@ -38,6 +38,8 @@ public class Round : BaseEntity<RoundId>
     public Score CurrentScore =>
         new(PlayerHands.ToDictionary(h => h.Id, h => h.Bones.Sum(b => b.Weight)));
 
+    public IReadOnlyList<OpenEnd> GetOpenEnds => _lineOfPlay.OpenEnds;
+
     public void ShuffleBoneyard()
     {
         Stock = [.. Stock.OrderBy(_ => Guid.NewGuid())];
