@@ -1,4 +1,6 @@
-﻿namespace PipAndIvory.Domain.Events;
+﻿using PipAndIvory.Domain.Entities.AggregateRoots;
+
+namespace PipAndIvory.Domain.Events;
 
 public class TodoItemCompletedEvent : BaseEvent
 {

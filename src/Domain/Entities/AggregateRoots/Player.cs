@@ -1,6 +1,6 @@
 ﻿using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-namespace PipAndIvory.Domain.Entities;
+namespace PipAndIvory.Domain.Entities.AggregateRoots;
 
 /// <summary>
 /// Represents a player in the domain model.

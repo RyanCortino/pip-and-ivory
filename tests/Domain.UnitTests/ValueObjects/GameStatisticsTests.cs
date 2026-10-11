@@ -12,8 +12,8 @@ public class GameStatisticsTests
     {
         var gs = GameStatistics.From(10, 3, 50);
 
-        gs.Played.ShouldBe(10);
-        gs.Won.ShouldBe(3);
+        gs.GamesPlayed.ShouldBe(10);
+        gs.GamesWon.ShouldBe(3);
         gs.HighestScore.ShouldBe(50);
     }
 
@@ -42,8 +42,8 @@ public class GameStatisticsTests
     {
         var none = GameStatistics.None;
 
-        none.Played.ShouldBe(0);
-        none.Won.ShouldBe(0);
+        none.GamesPlayed.ShouldBe(0);
+        none.GamesWon.ShouldBe(0);
         none.HighestScore.ShouldBe(0);
     }
 
@@ -54,8 +54,8 @@ public class GameStatisticsTests
 
         var recorded = gs.RecordGame(true, 12);
 
-        recorded.Played.ShouldBe(3);
-        recorded.Won.ShouldBe(2);
+        recorded.GamesPlayed.ShouldBe(3);
+        recorded.GamesWon.ShouldBe(2);
         recorded.HighestScore.ShouldBe(12);
     }
 
@@ -66,8 +66,8 @@ public class GameStatisticsTests
 
         var recorded = gs.RecordGame(false, 5);
 
-        recorded.Played.ShouldBe(3);
-        recorded.Won.ShouldBe(1);
+        recorded.GamesPlayed.ShouldBe(3);
+        recorded.GamesWon.ShouldBe(1);
         recorded.HighestScore.ShouldBe(10);
     }
 

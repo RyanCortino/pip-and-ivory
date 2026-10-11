@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PipAndIvory.Domain.ValueObjects;
+﻿namespace PipAndIvory.Domain.ValueObjects;
 
 /// <summary>
 /// Represents aggregated game statistics for a player: number of games played, number won, and highest score.
 /// </summary>
-/// <param name="played">Total number of games played (must be &gt;= 0).</param>
-/// <param name="won">Total number of games won (must be &gt;= 0 and &lt;= <paramref name="played"/>).</param>
+/// <param name="gamesPlayed">Total number of games played (must be &gt;= 0).</param>
+/// <param name="gamesWon">Total number of games won (must be &gt;= 0 and &lt;= <paramref name="gamesPlayed"/>).</param>
 /// <param name="highestScore">Highest score achieved across games (must be &gt;= 0).</param>
-public class GameStatistics(int played, int won, int highestScore) : ValueObject
+public class GameStatistics(int gamesPlayed, int gamesWon, int highestScore) : ValueObject
 {
     /// <summary>
     /// Creates a validated <see cref="GameStatistics"/> instance.
@@ -30,12 +26,16 @@ public class GameStatistics(int played, int won, int highestScore) : ValueObject
     {
         var gameStatistics = new GameStatistics(played, won, highestScore);
 
-        if (gameStatistics.Played < 0 || gameStatistics.Won < 0 || gameStatistics.HighestScore < 0)
+        if (
+            gameStatistics.GamesPlayed < 0
+            || gameStatistics.GamesWon < 0
+            || gameStatistics.HighestScore < 0
+        )
         {
             throw new UnsupportedGameStatisticsException(played, won, highestScore);
         }
 
-        if (gameStatistics.Won > gameStatistics.Played)
+        if (gameStatistics.GamesWon > gameStatistics.GamesPlayed)
         {
             throw new UnsupportedGameStatisticsException(played, won, highestScore);
         }
@@ -46,12 +46,12 @@ public class GameStatistics(int played, int won, int highestScore) : ValueObject
     /// <summary>
     /// Number of games played.
     /// </summary>
-    public int Played { get; private set; } = played;
+    public int GamesPlayed { get; private set; } = gamesPlayed;
 
     /// <summary>
     /// Number of games won.
     /// </summary>
-    public int Won { get; private set; } = won;
+    public int GamesWon { get; private set; } = gamesWon;
 
     /// <summary>
     /// Highest score achieved across all recorded games.
@@ -70,15 +70,15 @@ public class GameStatistics(int played, int won, int highestScore) : ValueObject
     /// <param name="score">Score achieved in the recorded game.</param>
     /// <returns>A new <see cref="GameStatistics"/> with updated counters and highest score.</returns>
     public GameStatistics RecordGame(bool won, int score) =>
-        From(Played + 1, Won + (won ? 1 : 0), Math.Max(HighestScore, score));
+        From(GamesPlayed + 1, GamesWon + (won ? 1 : 0), Math.Max(HighestScore, score));
 
     /// <summary>
     /// Provides the sequence of components that define equality for this value object.
     /// </summary>
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Played;
-        yield return Won;
+        yield return GamesPlayed;
+        yield return GamesWon;
         yield return HighestScore;
     }
 }

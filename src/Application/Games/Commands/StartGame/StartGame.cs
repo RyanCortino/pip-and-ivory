@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using PipAndIvory.Application.Common.Interfaces;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.Enums;
 using PipAndIvory.Domain.Events;
 using PipAndIvory.Domain.ValueObjects;

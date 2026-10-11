@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 using PipAndIvory.Infrastructure.Data.ValueConverters;
 
@@ -20,8 +20,8 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
             p => p.BlockGameStats,
             gs =>
             {
-                gs.Property(g => g.Played).HasColumnName("BlockGamesPlayed");
-                gs.Property(g => g.Won).HasColumnName("BlockGamesWon");
+                gs.Property(g => g.GamesPlayed).HasColumnName("BlockGamesPlayed");
+                gs.Property(g => g.GamesWon).HasColumnName("BlockGamesWon");
                 gs.Property(g => g.HighestScore).HasColumnName("BlockGamesHighestScore");
             }
         );
@@ -30,8 +30,8 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
             p => p.DrawGameStats,
             gs =>
             {
-                gs.Property(g => g.Played).HasColumnName("DrawGamesPlayed");
-                gs.Property(g => g.Won).HasColumnName("DrawGamesWon");
+                gs.Property(g => g.GamesPlayed).HasColumnName("DrawGamesPlayed");
+                gs.Property(g => g.GamesWon).HasColumnName("DrawGamesWon");
                 gs.Property(g => g.HighestScore).HasColumnName("DrawGamesHighestScore");
             }
         );

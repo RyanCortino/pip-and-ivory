@@ -8,12 +8,12 @@ public class GameStatisticsDto
     /// <summary>
     /// Total number of times the player has played.
     /// </summary>
-    public int Played { get; init; }
+    public int GamesPlayed { get; init; }
 
     /// <summary>
     /// Total number of wins the player has achieved.
     /// </summary>
-    public int Won { get; init; }
+    public int GamesWon { get; init; }
 
     /// <summary>
     /// The highest score the player has achieved in a single play session.

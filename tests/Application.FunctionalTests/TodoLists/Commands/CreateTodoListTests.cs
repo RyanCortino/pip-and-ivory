@@ -1,6 +1,6 @@
 ﻿using PipAndIvory.Application.Common.Exceptions;
 using PipAndIvory.Application.TodoLists.Commands.CreateTodoList;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.FunctionalTests.TodoLists.Commands;
 
@@ -16,15 +16,9 @@ public class CreateTodoListTests : TestBase
     [Test]
     public async Task ShouldRequireUniqueTitle()
     {
-        await TestApp.SendAsync(new CreateTodoListCommand
-        {
-            Title = "Shopping"
-        });
+        await TestApp.SendAsync(new CreateTodoListCommand { Title = "Shopping" });
 
-        var command = new CreateTodoListCommand
-        {
-            Title = "Shopping"
-        };
+        var command = new CreateTodoListCommand { Title = "Shopping" };
 
         await Should.ThrowAsync<ValidationException>(() => TestApp.SendAsync(command));
     }
@@ -34,10 +28,7 @@ public class CreateTodoListTests : TestBase
     {
         var userId = await TestApp.RunAsDefaultUserAsync();
 
-        var command = new CreateTodoListCommand
-        {
-            Title = "Tasks"
-        };
+        var command = new CreateTodoListCommand { Title = "Tasks" };
 
         var id = await TestApp.SendAsync(command);
 

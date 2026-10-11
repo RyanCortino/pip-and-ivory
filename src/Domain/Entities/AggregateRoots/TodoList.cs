@@ -1,4 +1,4 @@
-﻿namespace PipAndIvory.Domain.Entities;
+﻿namespace PipAndIvory.Domain.Entities.AggregateRoots;
 
 public class TodoList : BaseAuditableEntity<int>
 {

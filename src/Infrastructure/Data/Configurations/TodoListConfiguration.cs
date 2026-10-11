@@ -1,6 +1,6 @@
-﻿using PipAndIvory.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Infrastructure.Data.Configurations;
 

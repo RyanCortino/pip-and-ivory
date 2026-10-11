@@ -2,7 +2,8 @@
 
 public enum MoveType
 {
-    PlayMatch = 0,
-    Draw = 1,
-    Pass = 2,
+    SetSpinner = 0,
+    PlayMatch = 1,
+    Draw = 2,
+    Pass = 3,
 }

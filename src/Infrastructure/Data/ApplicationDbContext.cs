@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PipAndIvory.Application.Common.Interfaces;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Infrastructure.Identity;
 
 namespace PipAndIvory.Infrastructure.Data;

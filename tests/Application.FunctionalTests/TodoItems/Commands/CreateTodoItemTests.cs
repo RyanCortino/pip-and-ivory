@@ -1,7 +1,7 @@
 ﻿using PipAndIvory.Application.Common.Exceptions;
 using PipAndIvory.Application.TodoItems.Commands.CreateTodoItem;
 using PipAndIvory.Application.TodoLists.Commands.CreateTodoList;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.FunctionalTests.TodoItems.Commands;
 
@@ -20,16 +20,9 @@ public class CreateTodoItemTests : TestBase
     {
         var userId = await TestApp.RunAsDefaultUserAsync();
 
-        var listId = await TestApp.SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+        var listId = await TestApp.SendAsync(new CreateTodoListCommand { Title = "New List" });
 
-        var command = new CreateTodoItemCommand
-        {
-            ListId = listId,
-            Title = "Tasks"
-        };
+        var command = new CreateTodoItemCommand { ListId = listId, Title = "Tasks" };
 
         var itemId = await TestApp.SendAsync(command);
 

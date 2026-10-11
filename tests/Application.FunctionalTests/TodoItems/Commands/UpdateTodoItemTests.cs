@@ -1,7 +1,7 @@
 ﻿using PipAndIvory.Application.TodoItems.Commands.CreateTodoItem;
 using PipAndIvory.Application.TodoItems.Commands.UpdateTodoItem;
 using PipAndIvory.Application.TodoLists.Commands.CreateTodoList;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.FunctionalTests.TodoItems.Commands;
 
@@ -19,22 +19,13 @@ public class UpdateTodoItemTests : TestBase
     {
         var userId = await TestApp.RunAsDefaultUserAsync();
 
-        var listId = await TestApp.SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+        var listId = await TestApp.SendAsync(new CreateTodoListCommand { Title = "New List" });
 
-        var itemId = await TestApp.SendAsync(new CreateTodoItemCommand
-        {
-            ListId = listId,
-            Title = "New Item"
-        });
+        var itemId = await TestApp.SendAsync(
+            new CreateTodoItemCommand { ListId = listId, Title = "New Item" }
+        );
 
-        var command = new UpdateTodoItemCommand
-        {
-            Id = itemId,
-            Title = "Updated Item Title"
-        };
+        var command = new UpdateTodoItemCommand { Id = itemId, Title = "Updated Item Title" };
 
         await TestApp.SendAsync(command);
 

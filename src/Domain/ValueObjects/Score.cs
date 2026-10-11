@@ -4,7 +4,7 @@ namespace PipAndIvory.Domain.ValueObjects;
 
 public class Score(IReadOnlyDictionary<PlayerId, int> playerScores) : ValueObject
 {
-    public IReadOnlyDictionary<PlayerId, int> PlayerScores { get; } = playerScores;
+    public IReadOnlyDictionary<PlayerId, int> PlayerScores { get; private set; } = playerScores;
 
     public PlayerId Leader => PlayerScores.MaxBy(x => x.Value).Key;
 

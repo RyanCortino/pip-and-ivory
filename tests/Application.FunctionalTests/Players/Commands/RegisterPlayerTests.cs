@@ -1,5 +1,5 @@
 ﻿using PipAndIvory.Application.Players.Commands.RegisterPlayer;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.FunctionalTests.Players.Commands;
 

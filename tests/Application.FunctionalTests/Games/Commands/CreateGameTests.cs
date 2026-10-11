@@ -1,7 +1,7 @@
 ﻿using PipAndIvory.Application.Common.Exceptions;
 using PipAndIvory.Application.Games.Commands.StartGame;
 using PipAndIvory.Application.Players.Commands.RegisterPlayer;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.ValueObjects;
 
 namespace PipAndIvory.Application.FunctionalTests.Games.Commands;
@@ -37,8 +37,8 @@ public class CreateGameTests : TestBase
 
         game.ShouldNotBeNull();
         game!.GameVariant.ShouldBe(GameVariant.Block);
-        game.Participants.ShouldNotBeNull();
-        game.Participants.Count.ShouldBe(2);
+        game.RoundParticipants.ShouldNotBeNull();
+        game.RoundParticipants.Count.ShouldBe(2);
         game.CreatedBy.ShouldBe(userId);
         game.Created.ShouldBe(DateTime.Now, TimeSpan.FromMilliseconds(10000));
         game.LastModifiedBy.ShouldBe(userId);

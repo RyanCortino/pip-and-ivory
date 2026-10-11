@@ -1,5 +1,5 @@
 ﻿using PipAndIvory.Application.Common.Interfaces;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.TodoItems.Commands.CreateTodoItem;
 
@@ -19,13 +19,16 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
         _context = context;
     }
 
-    public async Task<int> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(
+        CreateTodoItemCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var entity = new TodoItem
         {
             ListId = request.ListId,
             Title = request.Title,
-            Done = false
+            Done = false,
         };
 
         _context.TodoItems.Add(entity);

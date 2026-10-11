@@ -1,31 +1,25 @@
 ﻿using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
-namespace PipAndIvory.Domain.Entities;
+namespace PipAndIvory.Domain.Entities.AggregateRoots;
 
 public class Game : BaseAuditableEntity<GameId>
 {
     public static Game Create(GameVariant gameVariant, IList<PlayerId> playerIds)
     {
-        var newGameId = GameId.New;
-
-        var participants = playerIds.Select(pid => new Participant { Id = pid }).ToList();
-
         var game = new Game
         {
-            Id = newGameId,
+            Id = GameId.New,
             GameVariant = gameVariant,
             GameStatus = GameStatus.InProgress,
         };
 
         foreach (var playerId in playerIds)
         {
-            var participant = new Participant { Id = playerId };
-
-            game.Participants.Add(participant);
+            game.RoundParticipants.Add(RoundParticipant.From(playerId));
         }
 
         game.AddDomainEvent(
-            new GameStartedDomainEvent(game.Id, [.. game.Participants.Select(g => g.Id)])
+            new GameStartedDomainEvent(game.Id, [.. game.RoundParticipants.Select(p => p.PlayerId)])
         );
 
         return game;
@@ -35,7 +29,7 @@ public class Game : BaseAuditableEntity<GameId>
 
     public GameVariant GameVariant { get; set; } = GameVariant.Block;
 
-    public IList<Participant> Participants { get; private set; } = [];
+    public IList<RoundParticipant> RoundParticipants { get; private set; } = [];
 
     public IList<Round> Rounds { get; private set; } = [];
 
@@ -46,9 +40,7 @@ public class Game : BaseAuditableEntity<GameId>
         // Create a new round
         var round = Round.Create(Bone.StandardDoubleSixSet);
 
-        round.ShuffleBoneyard();
-
-        round.StartRound(Participants);
+        round.StartRound(RoundParticipants);
 
         // Raise a domain event to indicate that the round has started
         round.AddDomainEvent(new RoundStartedDomainEvent(Id, round.Id, round.CurrentTurn));
@@ -56,14 +48,21 @@ public class Game : BaseAuditableEntity<GameId>
         Rounds.Add(round);
     }
 
-    public void Play(PlayerId playerId, Bone bone, BranchId branchId)
+    public void Play(PlayerId playerId, Bone bone)
     {
         EnsureInProgress();
 
-        CurrentRound.PlayTile(Id, playerId, bone, branchId);
+        CurrentRound.PlayTile(Id, playerId, bone);
+    }
+
+    public void Play(PlayerId playerId, Bone bone, Arm arm, Branch branch)
+    {
+        EnsureInProgress();
+
+        CurrentRound.PlayTile(Id, playerId, bone, arm, branch);
 
         // Check if the player has emptied their hand
-        if (CurrentRound.PlayerHands.First(h => h.Id == playerId).Bones.Count == 0)
+        if (CurrentRound.Tableau.PlayerHands.First(h => h.Id == playerId).Bones.Count == 0)
         {
             CompleteRound(RoundEndReason.Domino);
         }
@@ -86,12 +85,7 @@ public class Game : BaseAuditableEntity<GameId>
     {
         EnsureInProgress();
 
-        if (GameVariant != GameVariant.Draw)
-            throw new InvalidOperationException(
-                "Only games with the 'Draw' variant can draw from the stock."
-            );
-
-        CurrentRound.DrawFromStock(Id, playerId);
+        CurrentRound.Draw(Id, playerId);
     }
 
     public void CompleteRound(RoundEndReason roundEndReason)

@@ -1,5 +1,5 @@
 ﻿using PipAndIvory.Application.TodoLists.Queries.GetTodos;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.ValueObjects;
 
 namespace PipAndIvory.Application.FunctionalTests.TodoLists.Queries;
@@ -23,11 +23,12 @@ public class GetTodosTests : TestBase
     {
         await TestApp.RunAsDefaultUserAsync();
 
-        await TestApp.AddAsync(new TodoList
-        {
-            Title = "Shopping",
-            Colour = Colour.Blue,
-            Items =
+        await TestApp.AddAsync(
+            new TodoList
+            {
+                Title = "Shopping",
+                Colour = Colour.Blue,
+                Items =
                 {
                     new TodoItem { Title = "Apples", Done = true },
                     new TodoItem { Title = "Milk", Done = true },
@@ -35,9 +36,10 @@ public class GetTodosTests : TestBase
                     new TodoItem { Title = "Toilet paper" },
                     new TodoItem { Title = "Pasta" },
                     new TodoItem { Title = "Tissues" },
-                    new TodoItem { Title = "Tuna" }
-                }
-        });
+                    new TodoItem { Title = "Tuna" },
+                },
+            }
+        );
 
         var query = new GetTodosQuery();
 

@@ -1,7 +1,7 @@
 ﻿using PipAndIvory.Application.TodoItems.Commands.CreateTodoItem;
 using PipAndIvory.Application.TodoItems.Commands.DeleteTodoItem;
 using PipAndIvory.Application.TodoLists.Commands.CreateTodoList;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.FunctionalTests.TodoItems.Commands;
 
@@ -18,16 +18,11 @@ public class DeleteTodoItemTests : TestBase
     [Test]
     public async Task ShouldDeleteTodoItem()
     {
-        var listId = await TestApp.SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+        var listId = await TestApp.SendAsync(new CreateTodoListCommand { Title = "New List" });
 
-        var itemId = await TestApp.SendAsync(new CreateTodoItemCommand
-        {
-            ListId = listId,
-            Title = "New Item"
-        });
+        var itemId = await TestApp.SendAsync(
+            new CreateTodoItemCommand { ListId = listId, Title = "New Item" }
+        );
 
         await TestApp.SendAsync(new DeleteTodoItemCommand(itemId));
 

@@ -1,5 +1,5 @@
 ﻿using PipAndIvory.Application.Common.Interfaces;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.ValueObjects;
 
 namespace PipAndIvory.Application.TodoLists.Commands.CreateTodoList;
@@ -20,12 +20,15 @@ public class CreateTodoListCommandHandler : IRequestHandler<CreateTodoListComman
         _context = context;
     }
 
-    public async Task<int> Handle(CreateTodoListCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(
+        CreateTodoListCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var entity = new TodoList
         {
             Title = request.Title,
-            Colour = Colour.From(request.Colour ?? Colour.Grey)
+            Colour = Colour.From(request.Colour ?? Colour.Grey),
         };
 
         _context.TodoLists.Add(entity);

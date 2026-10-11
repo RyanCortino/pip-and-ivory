@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
-using PipAndIvory.Application.Players.Queries.GetPlayer;
-using PipAndIvory.Domain.Entities;
+﻿using PipAndIvory.Application.Players.Queries.GetPlayer;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.ValueObjects;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
@@ -38,12 +37,12 @@ public class GetPlayerTests : TestBase
         result.Player.DisplayName.ShouldBe(TestDisplayName);
         result.Player.Id.ShouldBe(player.Id.ToString());
         result.Player.BlockGameStats.ShouldNotBeNull();
-        result.Player.BlockGameStats.Played.ShouldBe(1);
-        result.Player.BlockGameStats.Won.ShouldBe(1);
+        result.Player.BlockGameStats.GamesPlayed.ShouldBe(1);
+        result.Player.BlockGameStats.GamesWon.ShouldBe(1);
         result.Player.BlockGameStats.HighestScore.ShouldBe(100);
         result.Player.DrawGameStats.ShouldNotBeNull();
-        result.Player.DrawGameStats.Played.ShouldBe(0);
-        result.Player.DrawGameStats.Won.ShouldBe(0);
+        result.Player.DrawGameStats.GamesPlayed.ShouldBe(0);
+        result.Player.DrawGameStats.GamesWon.ShouldBe(0);
         result.Player.DrawGameStats.HighestScore.ShouldBe(0);
     }
 }

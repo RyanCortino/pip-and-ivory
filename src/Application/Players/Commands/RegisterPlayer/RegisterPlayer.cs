@@ -1,5 +1,5 @@
 using PipAndIvory.Application.Common.Interfaces;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.Players.Commands.RegisterPlayer;

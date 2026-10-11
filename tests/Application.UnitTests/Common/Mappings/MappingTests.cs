@@ -1,10 +1,11 @@
 using System.Runtime.CompilerServices;
 using AutoMapper;
-using PipAndIvory.Application.Common.Interfaces;
-using PipAndIvory.Application.TodoLists.Queries.GetTodos;
-using PipAndIvory.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using PipAndIvory.Application.Common.Interfaces;
+using PipAndIvory.Application.Players.Queries.GetPlayer;
+using PipAndIvory.Application.TodoLists.Queries.GetTodos;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.UnitTests.Common.Mappings;
 
@@ -20,9 +21,10 @@ public class MappingTests
         // Minimal logger factory for tests
         _loggerFactory = LoggerFactory.Create(b => b.AddDebug().SetMinimumLevel(LogLevel.Debug));
 
-        _configuration = new MapperConfiguration(cfg =>
-            cfg.AddMaps(typeof(IApplicationDbContext).Assembly),
-            loggerFactory: _loggerFactory);
+        _configuration = new MapperConfiguration(
+            cfg => cfg.AddMaps(typeof(IApplicationDbContext).Assembly),
+            loggerFactory: _loggerFactory
+        );
 
         _mapper = _configuration.CreateMapper();
     }
@@ -36,6 +38,7 @@ public class MappingTests
     [Test]
     [TestCase(typeof(TodoList), typeof(TodoListDto))]
     [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
+    [TestCase(typeof(Player), typeof(PlayerDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);
@@ -51,7 +54,6 @@ public class MappingTests
         // Type without parameterless constructor
         return RuntimeHelpers.GetUninitializedObject(type);
     }
-
 
     [OneTimeTearDown]
     public void OneTimeTearDown()

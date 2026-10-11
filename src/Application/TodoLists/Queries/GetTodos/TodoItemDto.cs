@@ -1,4 +1,4 @@
-﻿using PipAndIvory.Domain.Entities;
+﻿using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.TodoLists.Queries.GetTodos;
 

@@ -1,7 +1,7 @@
 ﻿using PipAndIvory.Application.Common.Exceptions;
 using PipAndIvory.Application.TodoLists.Commands.CreateTodoList;
 using PipAndIvory.Application.TodoLists.Commands.UpdateTodoList;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 
 namespace PipAndIvory.Application.FunctionalTests.TodoLists.Commands;
 
@@ -17,21 +17,11 @@ public class UpdateTodoListTests : TestBase
     [Test]
     public async Task ShouldRequireUniqueTitle()
     {
-        var listId = await TestApp.SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+        var listId = await TestApp.SendAsync(new CreateTodoListCommand { Title = "New List" });
 
-        await TestApp.SendAsync(new CreateTodoListCommand
-        {
-            Title = "Other List"
-        });
+        await TestApp.SendAsync(new CreateTodoListCommand { Title = "Other List" });
 
-        var command = new UpdateTodoListCommand
-        {
-            Id = listId,
-            Title = "Other List"
-        };
+        var command = new UpdateTodoListCommand { Id = listId, Title = "Other List" };
 
         var ex = await Should.ThrowAsync<ValidationException>(() => TestApp.SendAsync(command));
 
@@ -44,16 +34,9 @@ public class UpdateTodoListTests : TestBase
     {
         var userId = await TestApp.RunAsDefaultUserAsync();
 
-        var listId = await TestApp.SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+        var listId = await TestApp.SendAsync(new CreateTodoListCommand { Title = "New List" });
 
-        var command = new UpdateTodoListCommand
-        {
-            Id = listId,
-            Title = "Updated List Title"
-        };
+        var command = new UpdateTodoListCommand { Id = listId, Title = "Updated List Title" };
 
         await TestApp.SendAsync(command);
 

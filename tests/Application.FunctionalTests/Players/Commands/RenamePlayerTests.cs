@@ -1,7 +1,7 @@
 ﻿using PipAndIvory.Application.Common.Exceptions;
 using PipAndIvory.Application.Players.Commands.RegisterPlayer;
 using PipAndIvory.Application.Players.Commands.RenamePlayer;
-using PipAndIvory.Domain.Entities;
+using PipAndIvory.Domain.Entities.AggregateRoots;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 
 namespace PipAndIvory.Application.FunctionalTests.Players.Commands;
