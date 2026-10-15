@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PipAndIvory.Domain.Entities;
 using PipAndIvory.Domain.Entities.AggregateRoots;
+using PipAndIvory.Domain.ValueObjects;
 using PipAndIvory.Domain.ValueObjects.ReferenceTypes;
 using PipAndIvory.Infrastructure.Data.ValueConverters;
 
@@ -23,13 +24,34 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
 
         // Owned Entities
         builder.OwnsOne(v => v.GameVariant);
-        builder.OwnsMany(g => g.RoundParticipants);
+        builder.OwnsMany(g => g.Participants, ConfigureGameParticipants());
 
         // Rounds Collection
         builder.OwnsMany(g => g.Rounds, ConfigureGameRounds());
 
         // Navigation
         builder.Navigation(g => g.Rounds).AutoInclude();
+    }
+
+    private static Action<OwnedNavigationBuilder<Game, Participant>> ConfigureGameParticipants()
+    {
+        return participantsBuilder =>
+        {
+            participantsBuilder.ToTable("GameParticipants");
+            participantsBuilder.WithOwner().HasForeignKey("GameId");
+
+            // Primary Key
+            participantsBuilder.HasKey("Id");
+            participantsBuilder
+                .Property(p => p.PlayerId)
+                .HasConversion<ReferenceTypeIdConverter<PlayerId>>();
+
+            // Score
+            participantsBuilder.Property(p => p.Score);
+
+            // IsWinner
+            participantsBuilder.Property(p => p.IsWinner);
+        };
     }
 
     private static Action<OwnedNavigationBuilder<Game, Round>> ConfigureGameRounds()
@@ -70,7 +92,7 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
             builder.Property(m => m.PlayerId).HasConversion<ReferenceTypeIdConverter<PlayerId>>();
 
             // Move Type
-            builder.Property(m => m.Type).HasConversion<int>();
+            builder.Property(m => m.MoveType).HasConversion<int>();
 
             // Sequence Place
             builder.Property(m => m.SequenceIndex);
@@ -141,16 +163,20 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
 
             handsBuilder.Property(h => h.Id).HasConversion<ReferenceTypeIdConverter<PlayerId>>();
 
-            //handsBuilder.OwnsMany<Bone>(
-            //    h => h.Bones,
-            //    bonesBuilder =>
-            //    {
-            //        bonesBuilder.ToTable("HandBones");
-            //        bonesBuilder.WithOwner().HasForeignKey("HandId");
-            //        bonesBuilder.Property(b => b.Pip1);
-            //        bonesBuilder.Property(b => b.Pip2);
-            //    }
-            //);
+            handsBuilder.OwnsMany(h => h.Bones, ConfigureHandTiles());
+        };
+    }
+
+    private static Action<OwnedNavigationBuilder<Hand, Bone>> ConfigureHandTiles()
+    {
+        return bonesBuilder =>
+        {
+            bonesBuilder.ToTable("HandBones");
+            bonesBuilder.WithOwner().HasForeignKey("HandId");
+
+            bonesBuilder.Property(b => b.Pip1);
+
+            bonesBuilder.Property(b => b.Pip2);
         };
     }
 

@@ -17,7 +17,7 @@ public class Move(PlayerId playerId, MoveType moveType, int sequenceIndex) : Val
 
     public PlayerId PlayerId { get; private set; } = playerId;
 
-    public MoveType Type { get; private set; } = moveType;
+    public MoveType MoveType { get; private set; } = moveType;
 
     public int SequenceIndex { get; private set; } = sequenceIndex;
 
@@ -40,7 +40,7 @@ public class Move(PlayerId playerId, MoveType moveType, int sequenceIndex) : Val
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return PlayerId;
-        yield return Type;
+        yield return MoveType;
         yield return SequenceIndex;
     }
 }

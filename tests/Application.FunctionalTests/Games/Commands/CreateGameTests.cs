@@ -37,8 +37,8 @@ public class CreateGameTests : TestBase
 
         game.ShouldNotBeNull();
         game!.GameVariant.ShouldBe(GameVariant.Block);
-        game.RoundParticipants.ShouldNotBeNull();
-        game.RoundParticipants.Count.ShouldBe(2);
+        game.Participants.ShouldNotBeNull();
+        game.Participants.Count.ShouldBe(2);
         game.CreatedBy.ShouldBe(userId);
         game.Created.ShouldBe(DateTime.Now, TimeSpan.FromMilliseconds(10000));
         game.LastModifiedBy.ShouldBe(userId);

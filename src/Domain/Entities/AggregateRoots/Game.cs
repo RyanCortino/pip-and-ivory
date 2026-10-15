@@ -15,11 +15,11 @@ public class Game : BaseAuditableEntity<GameId>
 
         foreach (var playerId in playerIds)
         {
-            game.RoundParticipants.Add(RoundParticipant.From(playerId));
+            game.Participants.Add(Participant.From(playerId));
         }
 
         game.AddDomainEvent(
-            new GameStartedDomainEvent(game.Id, [.. game.RoundParticipants.Select(p => p.PlayerId)])
+            new GameStartedDomainEvent(game.Id, [.. game.Participants.Select(p => p.PlayerId)])
         );
 
         return game;
@@ -29,7 +29,7 @@ public class Game : BaseAuditableEntity<GameId>
 
     public GameVariant GameVariant { get; set; } = GameVariant.Block;
 
-    public IList<RoundParticipant> RoundParticipants { get; private set; } = [];
+    public IList<Participant> Participants { get; private set; } = [];
 
     public IList<Round> Rounds { get; private set; } = [];
 
@@ -40,7 +40,7 @@ public class Game : BaseAuditableEntity<GameId>
         // Create a new round
         var round = Round.Create(Bone.StandardDoubleSixSet);
 
-        round.StartRound(RoundParticipants);
+        round.StartRound(Participants);
 
         // Raise a domain event to indicate that the round has started
         round.AddDomainEvent(new RoundStartedDomainEvent(Id, round.Id, round.CurrentTurn));

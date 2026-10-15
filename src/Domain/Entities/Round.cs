@@ -35,7 +35,7 @@ public class Round : BaseEntity<RoundId>
     public Score CurrentScore =>
         new(Tableau!.PlayerHands.ToDictionary(h => h.Id, h => h.Bones.Sum(b => b.Weight)));
 
-    public void StartRound(IList<RoundParticipant> participants)
+    public void StartRound(IList<Participant> participants)
     {
         DealPlayerHands(participants);
 
@@ -57,7 +57,7 @@ public class Round : BaseEntity<RoundId>
         return result;
     }
 
-    public void DealPlayerHands(IList<RoundParticipant> participants)
+    public void DealPlayerHands(IList<Participant> participants)
     {
         var handSize = participants.Count <= 3 ? 7 : 5;
 
